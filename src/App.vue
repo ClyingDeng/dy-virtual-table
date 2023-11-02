@@ -12,11 +12,13 @@ const tHeaderConfig = ref([
   },
   {
     label: '年龄',
-    prop: 'age'
+    prop: 'age',
+    width: 100
   },
   {
     label: '地址',
-    prop: 'address'
+    prop: 'address',
+    width: 260
   }
 ])
 
@@ -58,11 +60,18 @@ const tableData = ref([
     address: '上海市青浦区华新镇朱长村花之路'
   }
 ])
+
+const bigDataFn = () => {
+  for (let i = 0; i < 10; i++) {
+    tableData.value.push(...tableData.value)
+  }
+}
+bigDataFn()
 </script>
 
 <template>
   <div>
-    <VirtualTable :data="tableData" :columns="tHeaderConfig" style="width: 100%"></VirtualTable>
+    <VirtualTable border :height="400" :data="tableData" :columns="tHeaderConfig" style="width: 100%"></VirtualTable>
   </div>
 </template>
 

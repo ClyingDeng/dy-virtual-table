@@ -20,3 +20,14 @@ export const parseMinWidth = (minWidth: number | string): number | string => {
   }
   return minWidth
 }
+// 行高
+export const parseHeight = (height: number | string): number | string => {
+  if (height === '') return height
+  if (height !== undefined) {
+    height = Number.parseInt(height as string, 10)
+    if (Number.isNaN(height)) {
+      height = ''
+    }
+  }
+  return height
+}
