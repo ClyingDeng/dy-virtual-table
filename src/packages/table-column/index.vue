@@ -6,13 +6,13 @@ import { parseWidth, parseMinWidth } from '../util'
 onMounted(() => {})
 const props = defineProps({
   data: {
-    type: Object,
+    type: Object || String,
     default() {
       return () => {}
     }
   },
   column: {
-    type: Object,
+    type: Object || Function,
     default() {
       return () => {}
     }
@@ -38,29 +38,10 @@ const props = defineProps({
     default: ''
   }
 })
-
-const realWidth = ref(parseWidth(props.width))
-const realMinWidth = ref(parseMinWidth(props.minWidth))
-const setColumnWidth = () => {
-  let column = {}
-  if (realWidth.value) column.width = realWidth.value
-  if (realMinWidth.value) {
-    column.minWidth = realMinWidth.value
-  }
-  if (!realWidth.value && realMinWidth.value) {
-    column.width = undefined
-  }
-  if (!column.minWidth) {
-    column.minWidth = 80
-  }
-  column.realWidth = Number(column.width === undefined ? column.minWidth : column.width)
-  return column
-}
-let columnWidth = ref(setColumnWidth())
 </script>
 
 <template>
-  <div class="cell" :style="{ width: columnWidth.realWidth + 'px' }">
+  <div class="cell">
     {{ keyProp ? data[keyProp] : data }}
   </div>
 </template>
