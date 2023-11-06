@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, nextTick, computed } from 'vue'
 import DyTableColumn from '../table-column/index.vue'
 import { parseMinWidth, parseWidth } from '../util'
+const tableHeader = ref()
 
-onMounted(() => {})
 const props = defineProps({
   columns: {
     type: Array,
@@ -40,30 +40,57 @@ const setColumnWidth = (column: any) => {
   column.realWidth = Number(column.width === undefined ? column.minWidth : column.width)
   return column
 }
-// let columnWidth = ref(setColumnWidth())
+let headerHeight = computed(() => {
+  return tableHeader.value.offsetHeight
+})
+defineExpose({
+  headerHeight: headerHeight
+})
+onMounted(() => {
+  // nextTick(() => {
+  //   console.log(tableHeader.value)
+  // })
+})
 </script>
 
 <template>
-  <!-- <div class="header"> -->
-  <!-- <table ref="tableHeader" border> -->
-  <thead>
-    <tr>
-      <th
-        v-for="(column, index) in columns"
-        :key="`${column.prop}-thead`"
-        class="dy-table__cell"
-        :style="{ width: setColumnWidth(column).realWidth + 'px' }"
-      >
-        <!-- <div class="cell">{{ column.label }}</div> -->
-        <dy-table-column :data="column.label"></dy-table-column>
-      </th>
-    </tr>
-  </thead>
-  <!-- </table> -->
-  <!-- </div> -->
+  <div class="dy-vl-header">
+    <table
+      ref="tableHeader"
+      class="dy-table-header dy-table--border-header"
+      :border="0"
+      cellspacing="0"
+      cellpadding="0"
+    >
+      <thead>
+        <tr>
+          <th
+            v-for="(column, index) in columns"
+            :key="`${column.prop}-thead`"
+            class="dy-table__cell"
+            :style="{ width: setColumnWidth(column).realWidth + 'px' }"
+          >
+            <!-- <div class="cell">{{ column.label }}</div> -->
+            <dy-table-column :data="column.label"></dy-table-column>
+          </th>
+        </tr>
+      </thead>
+    </table>
+  </div>
 </template>
 
 <style lang="scss" scoped>
+.dy-vl-header {
+  width: 100%;
+}
+.dy-table-header {
+  position: relative;
+  width: 100%;
+}
+.dy-table--border-header {
+  // border-left: 0px solid #363637;
+  // border-top: 0px solid #363637;
+}
 .header {
   width: 100%;
 }

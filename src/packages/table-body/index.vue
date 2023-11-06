@@ -11,6 +11,12 @@ const props = defineProps({
       return () => []
     }
   },
+  height: {
+    type: String,
+    default() {
+      return () => '400'
+    }
+  },
   columns: {
     type: Array,
     default() {
@@ -51,30 +57,45 @@ const setColumnWidth = (column: any) => {
 </script>
 
 <template>
-  <tbody class="dy-vl__wrapper">
-    <tr v-for="(item, index) in data" :key="`tbody_${index}`">
-      <td
-        v-for="(column, i) in columns"
-        :key="`tcolumn_${index}_${i}`"
-        class="dy-table__cell"
-        :style="{ width: setColumnWidth(column).realWidth + 'px' }"
-      >
-        <dy-table-column :data="item" :column="column" :key-prop="column.prop"></dy-table-column>
-      </td>
-    </tr>
-  </tbody>
+  <div class="dy-vl__wrapper" :style="{ height: height + 'px' }">
+    <table
+      ref="tableWrapHeader"
+      class="dy-table-wrapper dy-table--border-wrapper"
+      :border="0"
+      cellspacing="0"
+      cellpadding="0"
+    >
+      <tbody>
+        <tr v-for="(item, index) in data" :key="`tbody_${index}`">
+          <td
+            v-for="(column, i) in columns"
+            :key="`tcolumn_${index}_${i}`"
+            class="dy-table__cell"
+            :style="{ width: setColumnWidth(column).realWidth + 'px' }"
+          >
+            <dy-table-column :data="item" :column="column" :key-prop="column.prop"></dy-table-column>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
 
 <style lang="scss" scoped>
-.dy-vl__wrapper{
-  
+.dy-table-wrapper {
+  position: relative;
+  width: 100%;
+}
+.dy-vl__wrapper {
+  overflow-y: auto;
+  width: 100%;
 }
 .dy-table__cell {
   padding: 0;
   border-bottom: 1px solid #363637;
   border-right: 1px solid #363637;
   box-sizing: border-box;
-  overflow: hidden;
+  // overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal;
   word-break: break-all;
