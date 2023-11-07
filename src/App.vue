@@ -26,37 +26,37 @@ const tableData = ref([
   {
     name: 'clying',
     sex: '女',
-    age: '20',
+    age: '1',
     address: '上海市青浦区华新镇'
   },
   {
     name: 'clying',
     sex: '女',
-    age: '21',
+    age: '2',
     address: '上海市青浦区华新镇'
   },
   {
     name: 'deng',
     sex: '女',
-    age: '20',
+    age: '3',
     address: '上海市青浦区华新镇'
   },
   {
     name: 'clying',
     sex: '女',
-    age: '20',
+    age: '4',
     address: '上海市青浦区华新镇朱长村'
   },
   {
     name: 'Mark',
     sex: '男',
-    age: '20',
+    age: '5',
     address: '上海市青浦区华新镇'
   },
   {
     name: 'join',
     sex: '男',
-    age: '28',
+    age: '6',
     address: '上海市青浦区华新镇朱长村花之路'
   }
 ])

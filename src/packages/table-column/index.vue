@@ -36,14 +36,16 @@ const props = defineProps({
   minWidth: {
     type: String,
     default: ''
+  },
+  index: {
+    type: Number,
+    default: 0
   }
 })
 </script>
 
 <template>
-  <div class="cell">
-    {{ keyProp ? data[keyProp] : data }}
-  </div>
+  <div class="cell">{{ index }} {{ keyProp ? data[keyProp] : data }}</div>
 </template>
 
 <style lang="scss" scoped></style>
