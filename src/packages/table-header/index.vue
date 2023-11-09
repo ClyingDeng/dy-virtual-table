@@ -98,7 +98,7 @@ onMounted(() => {
   padding: 0;
   border-bottom: 1px solid #363637;
   border-right: 1px solid #363637;
-  // box-sizing: border-box;
+  box-sizing: border-box;
   // overflow: hidden;
   // text-overflow: ellipsis;
   // white-space: normal;
