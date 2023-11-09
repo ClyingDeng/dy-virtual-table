@@ -57,8 +57,8 @@ let tableWrapper = ref(null)
 let dyTableWrapper = ref(null)
 let scrollBody = ref(null) // 可视区域
 let padBody = ref(null) // 隐藏区域
-let scrollContainer = ref(1000) // 所有数据的大容器
-// let scrollContainer = ref(20 * props.data.length) // 所有数据的大容器
+// let scrollContainer = ref(1000) // 所有数据的大容器
+let scrollContainer = ref(20 * props.data.length) // 所有数据的大容器
 let clientHeight = ref(props.height) // 容器高度
 let offsetStart = ref(0) // 滚动开始的位置
 let dataList = ref<any>([])
@@ -101,15 +101,13 @@ const scrollChangeData = (scrollTop: number) => {
   nextTick(() => {
     let firstChild = scrollBody.value.getElementsByTagName('tr')[0]
     let lastChild = scrollBody.value.getElementsByTagName('tr')[dataList.value.length - 1] //最后一个元素离顶部的距离
-    // console.log(
-    //   scrollTop - scrollHeight.value,
-    //   '滚动距离',
-    //   scrollTop,
-    //   scrollHeight.value, // 向上滚动的距离
-    //   clientHeight.value
-    // )
+
     // 渲染出的真实节点的最后一个子节点滚动的位置 加上 本身高度 减去 滚动的偏移量 是否占满不了一屏
     if (lastChild.offsetTop + lastChild.offsetHeight - scrollTop <= clientHeight.value) {
+      if (pageNum.value * pageSize.value > props.data.length) {
+        return
+      }
+
       addDataFn() // 加数据
       let arr = cloneDeep(dataList.value)
       let hiddenHeight = scrollBody.value.getElementsByTagName('tr')[pageSize.value]
@@ -125,18 +123,19 @@ const scrollChangeData = (scrollTop: number) => {
 
     // 上滑 向头部添加数据 删除尾部隐藏数据
     if (scrollTop - scrollHeight.value < 0) {
-      // console.log('下拉触发', pageNum.value)
       // 上滑到第一页
       // 渲染占满一屏至少需要两页数据 所以当pageNum为2时 说明已经加载到最前面一页的数据了
-      if (pageNum.value < 3) {
+      if (pageNum.value <= 3) {
         scrollBody.value.style.paddingTop = 0 + 'px'
         return
       }
       unshiftDataFn()
       let arr = cloneDeep(dataList.value)
       let hiddenHeight = scrollBody.value.getElementsByTagName('tr')[pageSize.value]
+      // console.log('下拉触发', pageNum.value, scrollHeight.value, hiddenHeight.offsetTop - scrollHeight.value)
+      // debugger
       // 完全滚出页面的数据高度
-      scrollHeight.value = hiddenHeight.offsetTop - scrollHeight.value
+      scrollHeight.value = scrollHeight.value - (hiddenHeight.offsetTop - scrollHeight.value)
       // 数据处理 超出的最前面一页的数据去除
       dataList.value = arr.slice(0, pageSize.value * 2)
       // 去除数据后 使用padding占位
