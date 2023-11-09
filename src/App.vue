@@ -24,13 +24,13 @@ const tHeaderConfig = ref([
 
 const tableData = ref([
   {
-    name: 'clying',
+    name: 'clying1',
     sex: '女',
     age: '1',
     address: '上海市青浦区华新镇'
   },
   {
-    name: 'clying',
+    name: '第二',
     sex: '女',
     age: '2',
     address: '上海市青浦区华新镇'
@@ -62,8 +62,13 @@ const tableData = ref([
 ])
 
 const bigDataFn = () => {
-  for (let i = 0; i < 10; i++) {
-    tableData.value.push(...tableData.value)
+  for (let i = 0; i < 1000; i++) {
+    tableData.value[i] = {
+      name: 'clying ' + i,
+      sex: '女',
+      age: '22',
+      address: '上海市青浦区华新镇' + i
+    }
   }
 }
 bigDataFn()

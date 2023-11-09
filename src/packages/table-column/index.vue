@@ -45,7 +45,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="cell">{{ index }} {{ keyProp ? data[keyProp] : data }}</div>
+  <div class="cell">{{ keyProp ? data[keyProp] : data }}</div>
 </template>
 
 <style lang="scss" scoped></style>

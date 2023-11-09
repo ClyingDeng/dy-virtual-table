@@ -2,6 +2,7 @@
 import { onMounted, ref, nextTick, watch } from 'vue'
 import DyTableColumn from '../table-column/index.vue'
 import { parseMinWidth, parseWidth } from '../util'
+import { cloneDeep } from 'lodash'
 
 // Vue.component('DyTableColumn', DyTableColumn)
 onMounted(() => {})
@@ -14,9 +15,7 @@ const props = defineProps({
   },
   height: {
     type: Number,
-    default() {
-      return () => 400
-    }
+    default: 400
   },
   columns: {
     type: Array,
@@ -56,132 +55,81 @@ const setColumnWidth = (column: any) => {
 }
 let tableWrapper = ref(null)
 let dyTableWrapper = ref(null)
-let scrollBody = ref(null)
-let scrollContainer = ref(20 * props.data.length)
+let scrollBody = ref(null) // 可视区域
+let padBody = ref(null) // 隐藏区域
+let scrollContainer = ref(1000) // 所有数据的大容器
+// let scrollContainer = ref(20 * props.data.length) // 所有数据的大容器
+let clientHeight = ref(props.height) // 容器高度
+let offsetStart = ref(0) // 滚动开始的位置
 let dataList = ref<any>([])
-let pageSize = ref(10)
+let pageSize = ref(15)
 let pageNum = ref(1)
-let finished = ref(false)
+let visibleNum = ref(10) // 渲染一屏 需要多少条数据
 
-// 加数据
-// const addDataFn = () => {
-//   // 第一页直接进行数据赋值
-//   if (pageNum.value === 1) {
-//     // 无数据时
-//     // noData.value = data.length === 0 ? true : false
-//     dataList.value = props.data.slice(0, pageSize.value) || []
-//     if (dataList.value.length === 0) {
-//       finished.value = true
-//     }
-//   }
-//   console.log(pageSize.value * (pageNum.value - 1), pageSize.value * pageNum.value)
-
-//   // 大于1页后需要push数据
-//   let pageData = props.data.slice(pageSize.value * (pageNum.value - 1), pageSize.value * pageNum.value)
-//   if (pageNum.value > 1 && pageData.length) dataList.value.push(...pageData)
-
-//   pageNum.value++
-// }
 const addDataFn = () => {
-  // 第一页直接进行数据赋值
-  // if (pageNum.value === 1) {
-  //   // 无数据时
-  //   // noData.value = data.length === 0 ? true : false
-  //   dataList.value = props.data.slice(0, pageSize.value) || []
-  //   if (dataList.value.length === 0) {
-  //     finished.value = true
-  //   }
-  // }
-  // console.log(pageSize.value * (pageNum.value - 1), pageSize.value * pageNum.value)
-
-  // 大于1页后需要push数据
   let pageData = props.data.slice(pageSize.value * (pageNum.value - 1), pageSize.value * pageNum.value)
   if (pageData.length) dataList.value.push(...pageData)
-
   pageNum.value++
 }
-
-addDataFn()
-
-const renderTrFn = () => {
-  // 删除所有子节点
-  while (scrollBody.value.firstChild) scrollBody.value.removeChild(scrollBody.value.firstChild)
-
-  // 创建新的子节点
-  const fragment = new DocumentFragment()
-
-  dataList.value.forEach((item: any, index: number) => {
-    const liContainer = document.createElement('tr')
-    liContainer.setAttribute('key', `tbody_${index}`)
-    liContainer.setAttribute('class', `dy-vt-wrapper`)
-    // fragment += `<tr :key="tbody_${index}" class="dy-vt-wrapper">`
-    // let s = ''
-    const fragmentli = new DocumentFragment()
-    props.columns.forEach((column: any, i: number) => {
-      const li = document.createElement('td')
-      li.setAttribute('key', `tcolumn_${index}_${i}`)
-      li.setAttribute('class', `dy-table__cell`)
-      li.style.width = `${setColumnWidth(column).realWidth}px`
-
-      const cell = document.createElement('dy-table-column')
-      cell.setAttribute('data', `${JSON.stringify(item)}`)
-      cell.setAttribute('index', `${index}`)
-      cell.setAttribute('column', `${JSON.stringify(column)}`)
-      cell.setAttribute('key-prop', `${column.prop}`)
-
-      li.appendChild(cell)
-      // s += `          <td
-      //       :key="tcolumn_${index}_${i}"
-      //       class="dy-table__cell"
-      //       :style="{ width: ${setColumnWidth(column).realWidth}px }"
-      //     >
-      //     <dy-table-column :data="${item}" :index="${index}" :column="${column}" :key-prop="${column.prop}"
-      //     ></dy-table-column>
-      //     </td>
-      //     `
-      fragmentli.appendChild(li)
-    })
-    liContainer.appendChild(fragmentli)
-    // fragment += s
-    fragment.appendChild(liContainer)
+// 页面初始化 渲染满可视区域需要多少条数据
+const init = () => {
+  addDataFn() // 加载一屏数据
+  nextTick(() => {
+    let lastChild = scrollBody.value.getElementsByTagName('tr')[Number(pageSize.value * (pageNum.value - 1)) - 1] //最后一个元素离顶部的距离
+    // 没铺满屏幕 继续加数据
+    if (lastChild.offsetTop + lastChild.offsetHeight < clientHeight.value) {
+      init()
+    } else {
+      // 铺满后，设置两倍数据方便滚动
+      pageSize.value = dataList.value.length
+      pageNum.value = 2
+      addDataFn()
+      tableWrapper.value.addEventListener('scroll', (e) => scrollEvent(e))
+    }
   })
-  scrollBody.value.appendChild(fragment)
-  console.log(fragment)
+}
+
+// 滚动
+let scrollHeight = ref(0)
+const scrollChangeData = (scrollTop: number) => {
+  nextTick(() => {
+    console.log('分页', pageSize.value * (pageNum.value - 2), Number(pageSize.value * (pageNum.value - 1)) - 1)
+    // let firstChild = scrollBody.value.getElementsByTagName('tr')[pageSize.value * (pageNum.value - 2)]
+    // let lastChild = scrollBody.value.getElementsByTagName('tr')[Number(pageSize.value * (pageNum.value - 1)) - 1] //最后一个元素离顶部的距离
+    let lastChild = scrollBody.value.getElementsByTagName('tr')[dataList.value.length - 1] //最后一个元素离顶部的距离
+    // offsetStart.value = scrollTop - firstChild.offsetHeight
+
+    if (lastChild.offsetTop + lastChild.offsetHeight - scrollTop <= clientHeight.value) {
+      addDataFn() // 加数据
+      let arr = cloneDeep(dataList.value)
+      // let hiddenHeight = scrollBody.value.getElementsByTagName('tr')[pageSize.value * (pageNum.value - 3)]
+      let hiddenHeight = scrollBody.value.getElementsByTagName('tr')[pageSize.value]
+      // 完全滚出页面的数据高度
+      scrollHeight.value = hiddenHeight.offsetTop + hiddenHeight.offsetHeight
+
+      // dataList.value = arr.slice(Number(pageSize.value * (pageNum.value - 3)), dataList.value.length)
+      dataList.value = arr.slice(Number(pageSize.value), dataList.value.length)
+
+      // scrollHeight.value += scrollTop
+      // padBody.value.style.height = scrollHeight.value + 'px'
+      scrollBody.value.style.paddingTop = scrollHeight.value + 'px'
+      //滚动出发数据变化
+      scrollChangeData(scrollHeight.value)
+    }
+  })
+}
+
+const scrollEvent = (e) => {
+  let scrollTop = e.target.scrollTop // 当前滚动的位置
+  //  0-pageSize*pageNum
+  // 开始/结束位置
+
+  scrollChangeData(scrollTop)
 }
 
 nextTick(() => {
-  let clientHeight = props.height // 容器高度
-  // 容器内数据的高度
-  let firstChild = scrollBody.value.getElementsByTagName('tr')[0]
-  let lastChild = scrollBody.value.getElementsByTagName('tr')[pageSize.value - 1] //最后一个元素离顶部的距离
-  console.log(lastChild.offsetTop)
-  // 初始化可是区数据 确保占满可视区
-  if (lastChild.offsetTop < clientHeight) addDataFn()
-
-  // console.log(scrollBody.value.offsetTop, props.height)
-  // let scrollRest =
-  tableWrapper.value.addEventListener('scroll', (e) => {
-    // let lastChild = scrollBody.value.lastElementChild
-    let scrollTop = e.target.scrollTop // 滚出容器的高度
-    console.log(lastChild, lastChild.offsetTop, scrollTop)
-    // 滚动
-    if (scrollTop >= lastChild.offsetTop) {
-      // renderTrFn()
-      addDataFn()
-      dataList.value.splice(0, 10)
-      e.target.scrollTop = 0
-      console.log(dataList.value, pageNum.value)
-      debugger
-    }
-  })
+  init()
 })
-// watch(
-//   () => scrollBody.value,
-//   (arr, oldVal) => {
-//     console.log(arr)
-//   },
-//   { deep: true }
-// )
 </script>
 
 <template>
@@ -206,7 +154,6 @@ nextTick(() => {
             <dy-table-column :data="item" :index="index" :column="column" :key-prop="column.prop"></dy-table-column>
           </td>
         </tr>
-        <!-- </div> -->
       </tbody>
     </table>
   </div>
@@ -222,6 +169,13 @@ nextTick(() => {
 .dy-table--border-wrapper {
   // position: absolute;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  .padding-block {
+    width: 100%;
+    position: absolute;
+    background-color: red;
+  }
   .scroll-container {
     width: 100%;
     .dy-vt-wrapper {
