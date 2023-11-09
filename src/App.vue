@@ -62,7 +62,7 @@ const tableData = ref([
 ])
 
 const bigDataFn = () => {
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < 100; i++) {
     tableData.value[i] = {
       name: 'clying ' + i,
       sex: '女',
