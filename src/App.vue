@@ -66,12 +66,13 @@ const bigDataFn = () => {
     tableData.value[i] = {
       name: 'clying ' + i,
       sex: '女',
-      age: '22',
-      address: '上海市青浦区华新镇' + i
+      age: i + '',
+      address: '上海市青浦区华新镇' + i + (Math.random() > 0.5 ? '哈'.repeat(10) : 'uuuuu'.repeat(20))
     }
   }
 }
 bigDataFn()
+// console.log('tableData.value', tableData.value)
 </script>
 
 <template>
