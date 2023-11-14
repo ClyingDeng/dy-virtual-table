@@ -39,7 +39,7 @@ const tableData = ref([
     name: 'deng',
     sex: '女',
     age: '3',
-    address: '上海市青浦区华新镇'
+    address: '上海市青浦区华新镇上海市青浦区华新镇上海市青浦区华新镇上海市青浦区华新镇'
   },
   {
     name: 'clying',
@@ -57,18 +57,164 @@ const tableData = ref([
     name: 'join',
     sex: '男',
     age: '6',
-    address: '上海市青浦区华新镇朱长村花之路'
+    address:
+      '上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路'
+  },
+  {
+    name: 'Mark',
+    sex: '男',
+    age: '7',
+    address: '上海市青浦区华新镇'
+  },
+  {
+    name: 'join',
+    sex: '男',
+    age: '8',
+    address:
+      '上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路'
+  },
+  {
+    name: 'join',
+    sex: '男',
+    age: '9',
+    address:
+      '上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路'
+  },
+  {
+    name: 'Mark',
+    sex: '男',
+    age: '10',
+    address: '上海市青浦区华新镇'
+  },
+  {
+    name: 'Mark',
+    sex: '男',
+    age: '11',
+    address: '上海市青浦区华新镇'
+  },
+  {
+    name: 'join',
+    sex: '男',
+    age: '12',
+    address:
+      '上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路'
+  },
+  {
+    name: 'deng',
+    sex: '女',
+    age: '13',
+    address: '上海市青浦区华新镇上海市青浦区华新镇上海市青浦区华新镇上海市青浦区华新镇'
+  },
+  {
+    name: 'clying',
+    sex: '女',
+    age: '14',
+    address: '上海市青浦区华新镇朱长村'
+  },
+  {
+    name: 'Mark',
+    sex: '男',
+    age: '15',
+    address: '上海市青浦区华新镇'
+  },
+  {
+    name: 'join',
+    sex: '男',
+    age: '16',
+    address:
+      '上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路'
+  },
+  {
+    name: 'Mark',
+    sex: '男',
+    age: '17',
+    address: '上海市青浦区华新镇'
+  },
+  {
+    name: 'Mark',
+    sex: '男',
+    age: '18',
+    address: '上海市青浦区华新镇'
+  },
+  {
+    name: 'Mark',
+    sex: '男',
+    age: '19',
+    address: '上海市青浦区华新镇'
+  },
+  {
+    name: 'Mark',
+    sex: '男',
+    age: '20',
+    address: '上海市青浦区华新镇'
+  },
+  {
+    name: 'clying1',
+    sex: '女',
+    age: '21',
+    address: '上海市青浦区华新镇'
+  },
+  {
+    name: '第二',
+    sex: '女',
+    age: '22',
+    address: '上海市青浦区华新镇'
+  },
+  {
+    name: 'deng',
+    sex: '女',
+    age: '23',
+    address: '上海市青浦区华新镇上海市青浦区华新镇上海市青浦区华新镇上海市青浦区华新镇'
+  },
+  {
+    name: 'clying',
+    sex: '女',
+    age: '24',
+    address: '上海市青浦区华新镇朱长村'
+  },
+  {
+    name: 'Mark',
+    sex: '男',
+    age: '25',
+    address: '上海市青浦区华新镇'
+  },
+  {
+    name: 'join',
+    sex: '男',
+    age: '26',
+    address:
+      '上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路'
+  },
+  {
+    name: 'Mark',
+    sex: '男',
+    age: '27',
+    address: '上海市青浦区华新镇'
+  },
+  {
+    name: 'join',
+    sex: '男',
+    age: '28',
+    address:
+      '上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路'
+  },
+  {
+    name: 'join',
+    sex: '男',
+    age: '29',
+    address:
+      '上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路'
   }
 ])
 
 const bigDataFn = () => {
-  for (let i = 0; i < 100; i++) {
-    tableData.value[i] = {
-      name: 'clying ' + i,
-      sex: '女',
-      age: i + '',
-      address: '上海市青浦区华新镇' + i + (Math.random() > 0.5 ? '哈'.repeat(10) : 'uuuuu'.repeat(20))
-    }
+  for (let i = 0; i < 5; i++) {
+    // tableData.value[i] = {
+    //   name: 'clying ' + i,
+    //   sex: '女',
+    //   age: i + '',
+    //   address: '上海市青浦区华新镇' + i + (Math.random() > 0.5 ? '哈'.repeat(10) : 'uuuuu'.repeat(20))
+    // }
   }
 }
 bigDataFn()

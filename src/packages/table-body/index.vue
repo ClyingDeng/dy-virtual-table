@@ -73,7 +73,6 @@ const addDataFn = () => {
   if (pageData.length) dataList.value.push(...pageData)
   if (pageData.length < pageSize.value) finished.value = true
   // else finished.value = false
-  console.log(pageData.length, pageSize.value, finished.value)
 
   pageNum.value++
 }
@@ -81,6 +80,7 @@ const addDataFn = () => {
 const unshiftDataFn = () => {
   let pageData = props.data.slice(pageSize.value * (pageNum.value - 4), pageSize.value * (pageNum.value - 3))
   if (pageData.length) dataList.value = pageData.concat(dataList.value)
+  console.log(pageData.length, pageSize.value, finished.value)
   pageNum.value--
 }
 // 页面初始化 渲染满可视区域需要多少条数据
@@ -115,9 +115,16 @@ const scrollChangeData = (scrollTop: number) => {
   nextTick(() => {
     let firstChild = scrollBody.value.getElementsByTagName('tr')[0]
     let lastChild = scrollBody.value.getElementsByTagName('tr')[dataList.value.length - 1] //最后一个元素离顶部的距离
-
+    // console.log(
+    //   '滚动多少了',
+    //   lastChild.offsetTop + lastChild.offsetHeight - scrollTop,
+    //   clientHeight.value,
+    //   (pageNum.value - 1) * pageSize.value,
+    //   props.data.length
+    // )
     // 渲染出的真实节点的最后一个子节点滚动的位置 加上 本身高度 减去 滚动的偏移量 是否占满不了一屏
     if (lastChild.offsetTop + lastChild.offsetHeight - scrollTop <= clientHeight.value) {
+      // 最后边界不满一页数据也需要加载
       if ((pageNum.value - 1) * pageSize.value > props.data.length) {
         return
       }
@@ -128,37 +135,30 @@ const scrollChangeData = (scrollTop: number) => {
       // 完全滚出页面的数据高度
       // scrollHeight.value = hiddenHeight.offsetTop + hiddenHeight.offsetHeight
       scrollHeight.value = heightMap.value[pageNum.value - 4]
-      console.log('页数', pageNum.value)
 
       // 数据处理 超出的最前面一页的数据去除
       dataList.value = arr.slice(Number(pageSize.value), dataList.value.length)
+      // console.log('页数', pageNum.value, dataList.value, dataList.value.length - 1)
       // 去除数据后 使用padding占位
       scrollBody.value.style.paddingTop = scrollHeight.value + 'px'
       nextTick(() => {
         let second = scrollBody.value.getElementsByTagName('tr')[dataList.value.length - 1]
         heightMap.value[pageNum.value - 1] = second.offsetTop + second.offsetHeight
-        // console.log(
-        //   '加载>=第三页数据',
-        //   finished.value,
-        //   heightMap.value,
-        //   pageNum.value,
-        //   pageSize.value * 2,
-        //   dataList.value.length
-        // )
-        if (finished.value) {
-          // 整个屏幕禁止滚动
-          scrollContainer.value = heightMap.value[pageNum.value - 1]
-          console.log(heightMap.value)
 
+        //加载到最后不满一页 整个屏幕禁止滚动
+        if (finished.value && dataList.value.length < pageSize.value * 2) {
+          scrollContainer.value = heightMap.value[pageNum.value - 1]
           return
         }
-        //滚动出发数据变化
+        //滚动触发数据变化
         scrollChangeData(scrollHeight.value)
       })
     }
+    // console.log('往上拉了嘛', finished.value, scrollTop - scrollHeight.value, scrollTop, scrollHeight.value)
 
     // 上滑 向头部添加数据 删除尾部隐藏数据
     if (scrollTop - scrollHeight.value < 0) {
+      // finished.value = false
       // 上滑到第一页
       // 渲染占满一屏至少需要两页数据 所以当pageNum为2时 说明已经加载到最前面一页的数据了
       if (pageNum.value <= 3) {
@@ -168,10 +168,18 @@ const scrollChangeData = (scrollTop: number) => {
       unshiftDataFn()
       let arr = cloneDeep(dataList.value)
       let hiddenHeight = scrollBody.value.getElementsByTagName('tr')[pageSize.value]
-      // console.log('下拉触发', pageNum.value, scrollHeight.value, hiddenHeight.offsetTop - scrollHeight.value)
+      console.log(
+        '下拉触发',
+        pageNum.value,
+        scrollHeight.value,
+        '原来减少到padding多少的高度',
+        scrollHeight.value - (hiddenHeight.offsetTop - scrollHeight.value),
+        heightMap.value
+      )
       // debugger
       // 完全滚出页面的数据高度
-      scrollHeight.value = scrollHeight.value - (hiddenHeight.offsetTop - scrollHeight.value)
+      // scrollHeight.value = scrollHeight.value - (hiddenHeight.offsetTop - scrollHeight.value)
+      scrollHeight.value = heightMap.value[pageNum.value - 3]
       // 数据处理 超出的最前面一页的数据去除
       dataList.value = arr.slice(0, pageSize.value * 2)
       // 去除数据后 使用padding占位
