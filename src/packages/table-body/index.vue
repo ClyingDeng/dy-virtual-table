@@ -80,6 +80,7 @@ const addDataFn = () => {
 const unshiftDataFn = () => {
   let pageData = props.data.slice(pageSize.value * (pageNum.value - 4), pageSize.value * (pageNum.value - 3))
   if (pageData.length) dataList.value = pageData.concat(dataList.value)
+  if (finished.value) finished.value = false
   console.log(pageData.length, pageSize.value, finished.value)
   pageNum.value--
 }
@@ -96,13 +97,17 @@ const init = () => {
       pageSize.value = dataList.value.length
       pageNum.value = 2
       addDataFn()
+      addDataFn()
       nextTick(() => {
+        heightMap.value[0] = 0
         let first = scrollBody.value.getElementsByTagName('tr')[pageSize.value - 1]
-        heightMap.value[0] = first.offsetTop + first.offsetHeight
-        let second = scrollBody.value.getElementsByTagName('tr')[dataList.value.length - 1]
-        heightMap.value[1] = second.offsetTop + second.offsetHeight
+        heightMap.value[1] = first.offsetTop + first.offsetHeight
+        let second = scrollBody.value.getElementsByTagName('tr')[pageSize.value * 2 - 1]
+        heightMap.value[2] = second.offsetTop + second.offsetHeight
+        let third = scrollBody.value.getElementsByTagName('tr')[dataList.value.length - 1]
+        heightMap.value[3] = third.offsetTop + third.offsetHeight
 
-        console.log('铺满了屏幕 两倍', heightMap.value, dataList.value.length, pageNum.value)
+        // console.log('铺满了屏幕 两倍', heightMap.value, dataList.value.length, pageNum.value)
         tableWrapper.value.addEventListener('scroll', (e) => scrollEvent(e))
       })
     }
@@ -112,23 +117,43 @@ const init = () => {
 // 滚动
 let scrollHeight = ref(0)
 const scrollChangeData = (scrollTop: number) => {
+  let firstChild = scrollBody.value.getElementsByTagName('tr')[0]
+  let lastChild = scrollBody.value.getElementsByTagName('tr')[dataList.value.length - 1] //最后一个元素离顶部的距离
+  let midChild = scrollBody.value.getElementsByTagName('tr')[pageSize.value] //第一页数据的高度
+  let midLastChild = scrollBody.value.getElementsByTagName('tr')[pageSize.value * 2] //最后一页第一条数据
   nextTick(() => {
-    let firstChild = scrollBody.value.getElementsByTagName('tr')[0]
-    let lastChild = scrollBody.value.getElementsByTagName('tr')[dataList.value.length - 1] //最后一个元素离顶部的距离
-    // console.log(
-    //   '滚动多少了',
-    //   lastChild.offsetTop + lastChild.offsetHeight - scrollTop,
-    //   clientHeight.value,
-    //   (pageNum.value - 1) * pageSize.value,
-    //   props.data.length
-    // )
+    // {0: 0, 1: 422, 2: 936, 3: 1174, 4: 898}
+    // pageNum.value, 4
+    // pageSize.value,8
+    // dataList.value.length,24
+    // scrollHeight.value,// 936
+    console.log(
+      '滚动多少了',
+      scrollTop,
+      pageNum.value,
+      scrollContainer.value < 200 * props.data.length,
+      // scrollTop - scrollHeight.value,
+      // heightMap.value[pageNum.value - 5],
+      midChild.offsetTop < scrollTop,
+      pageNum.value * pageSize.value < props.data.length,
+      scrollTop - scrollHeight.value < heightMap.value[pageNum.value - 5]
+      // lastChild.offsetTop + lastChild.offsetHeight - midLastChild.offsetTop //118 // lastChild.offsetTop + lastChild.offsetHeight -       midLastChild.offsetTop
+      // dataList.value.length,
+      // scrollHeight.value + lastChild.offsetTop,
+      // lastChild.offsetTop + lastChild.offsetHeight - scrollTop, //>
+      // scrollTop - scrollHeight.value,
+      // scrollTop - scrollHeight.value,
+      // heightMap.value[pageNum.value - 5]
+    )
+
+    // console.log('向上了 整个容器高度有没有固定', scrollTop, scrollHeight.value)
     // 渲染出的真实节点的最后一个子节点滚动的位置 加上 本身高度 减去 滚动的偏移量 是否占满不了一屏
-    if (lastChild.offsetTop + lastChild.offsetHeight - scrollTop <= clientHeight.value) {
+    // if (lastChild.offsetTop + lastChild.offsetHeight - scrollTop <= clientHeight.value) {
+    if (midChild.offsetTop < scrollTop) {
       // 最后边界不满一页数据也需要加载
       if ((pageNum.value - 1) * pageSize.value > props.data.length) {
         return
       }
-
       addDataFn() // 加数据
       let arr = cloneDeep(dataList.value)
       // let hiddenHeight = scrollBody.value.getElementsByTagName('tr')[pageSize.value]
@@ -146,7 +171,7 @@ const scrollChangeData = (scrollTop: number) => {
         heightMap.value[pageNum.value - 1] = second.offsetTop + second.offsetHeight
 
         //加载到最后不满一页 整个屏幕禁止滚动
-        if (finished.value && dataList.value.length < pageSize.value * 2) {
+        if (finished.value && dataList.value.length < pageSize.value * 3) {
           scrollContainer.value = heightMap.value[pageNum.value - 1]
           return
         }
@@ -154,10 +179,18 @@ const scrollChangeData = (scrollTop: number) => {
         scrollChangeData(scrollHeight.value)
       })
     }
-    // console.log('往上拉了嘛', finished.value, scrollTop - scrollHeight.value, scrollTop, scrollHeight.value)
+    // console.log('scrollTop', pageNum.value, scrollTop, firstChild.offsetTop, scrollHeight.value)
 
+    // nextTick(() => {
     // 上滑 向头部添加数据 删除尾部隐藏数据
-    if (scrollTop - scrollHeight.value < 0) {
+    if (
+      scrollTop - scrollHeight.value < heightMap.value[pageNum.value - 5] &&
+      pageNum.value * pageSize.value < props.data.length
+    ) {
+      // if (midChild.offsetTop > scrollTop) {
+      // 最后一页第一条数据滚出可视区域
+      // if (  scrollTop<   midLastChild.offsetTop  =scrollTop - scrollHeight.value < 0) {
+      // return
       // finished.value = false
       // 上滑到第一页
       // 渲染占满一屏至少需要两页数据 所以当pageNum为2时 说明已经加载到最前面一页的数据了
@@ -166,27 +199,38 @@ const scrollChangeData = (scrollTop: number) => {
         return
       }
       unshiftDataFn()
+      // 容器高度恢复
+      // scrollContainer.value = 200 * props.data.length
       let arr = cloneDeep(dataList.value)
       let hiddenHeight = scrollBody.value.getElementsByTagName('tr')[pageSize.value]
       console.log(
         '下拉触发',
         pageNum.value,
         scrollHeight.value,
-        '原来减少到padding多少的高度',
-        scrollHeight.value - (hiddenHeight.offsetTop - scrollHeight.value),
+        '现在的padding多少',
+        // scrollBody.value.style.paddingTop,
+        // scrollHeight.value - (hiddenHeight.offsetTop - scrollHeight.value),
         heightMap.value
       )
-      // debugger
       // 完全滚出页面的数据高度
       // scrollHeight.value = scrollHeight.value - (hiddenHeight.offsetTop - scrollHeight.value)
-      scrollHeight.value = heightMap.value[pageNum.value - 3]
+      scrollHeight.value = heightMap.value[pageNum.value - 4]
       // 数据处理 超出的最前面一页的数据去除
       dataList.value = arr.slice(0, pageSize.value * 2)
       // 去除数据后 使用padding占位
       scrollBody.value.style.paddingTop = scrollHeight.value + 'px'
+      // nextTick(() => {
+      console.log('头部加数据', finished.value, scrollBody.value.getElementsByTagName('tr')[0].offsetTop)
 
+      //加载到最前面 整个屏幕禁止滚动
+      if (finished.value) {
+        scrollBody.value.style.paddingTop = 0 + 'px'
+        return
+      }
       scrollChangeData(scrollHeight.value)
+      // })
     }
+    // })
   })
 }
 
