@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import VirtualTable from './packages/virtual-table/index.vue'
+import CanvasTable from './packages/canvas-table/index.vue'
+// import VirtualTable from './packages/virtual-table/index.vue'
 const tHeaderConfig = ref([
   {
     label: '姓名',
@@ -256,23 +257,13 @@ const tableData = ref([
   }
 ])
 
-const bigDataFn = () => {
-  for (let i = 0; i < 5; i++) {
-    // tableData.value[i] = {
-    //   name: 'clying ' + i,
-    //   sex: '女',
-    //   age: i + '',
-    //   address: '上海市青浦区华新镇' + i + (Math.random() > 0.5 ? '哈'.repeat(10) : 'uuuuu'.repeat(20))
-    // }
-  }
-}
-bigDataFn()
 // console.log('tableData.value', tableData.value)
 </script>
 
 <template>
   <div>
-    <VirtualTable border :height="400" :data="tableData" :columns="tHeaderConfig" style="width: 100%"></VirtualTable>
+    <!-- <VirtualTable border :height="400" :data="tableData" :columns="tHeaderConfig" style="width: 100%"></VirtualTable> -->
+    <canvas-Table :height="400" :data="tableData" :columns="tHeaderConfig"></canvas-Table>
   </div>
 </template>
 
