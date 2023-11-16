@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, nextTick, watch } from 'vue'
+import { onMounted, ref, nextTick, watch, computed } from 'vue'
 import DyTableColumn from '../table-column/index.vue'
 import { parseMinWidth, parseWidth } from '../util'
 import { cloneDeep } from 'lodash'
@@ -53,12 +53,17 @@ const setColumnWidth = (column: any) => {
   column.realWidth = Number(column.width === undefined ? column.minWidth : column.width)
   return column
 }
+const tableData = computed(() =>
+  props.data.map((prop, id) => {
+    return { ...prop, id: id }
+  })
+)
 let tableWrapper = ref(null)
 let dyTableWrapper = ref(null)
 let scrollBody = ref(null) // 可视区域
 let padBody = ref(null) // 隐藏区域
 // let scrollContainer = ref(1000) // 所有数据的大容器
-let scrollContainer = ref(200 * props.data.length) // 所有数据的大容器
+let scrollContainer = ref(200 * tableData.value.length) // 所有数据的大容器
 let clientHeight = ref(props.height) // 容器高度
 let offsetStart = ref(0) // 滚动开始的位置
 let dataList = ref<any>([])
@@ -67,9 +72,10 @@ let pageNum = ref(1)
 let visibleNum = ref(10) // 渲染一屏 需要多少条数据
 let finished = ref(false) // 是否加载结束
 let heightMap = ref({})
+const oldScrollTop = ref(0)
 
 const addDataFn = () => {
-  let pageData = props.data.slice(pageSize.value * (pageNum.value - 1), pageSize.value * pageNum.value)
+  let pageData = tableData.value.slice(pageSize.value * (pageNum.value - 1), pageSize.value * pageNum.value)
   if (pageData.length) dataList.value.push(...pageData)
   if (pageData.length < pageSize.value) finished.value = true
   // else finished.value = false
@@ -78,7 +84,7 @@ const addDataFn = () => {
 }
 // 向上添加数据
 const unshiftDataFn = () => {
-  let pageData = props.data.slice(pageSize.value * (pageNum.value - 4), pageSize.value * (pageNum.value - 3))
+  let pageData = tableData.value.slice(pageSize.value * (pageNum.value - 4), pageSize.value * (pageNum.value - 3))
   if (pageData.length) dataList.value = pageData.concat(dataList.value)
   if (finished.value) finished.value = false
   console.log(pageData.length, pageSize.value, finished.value)
@@ -116,7 +122,7 @@ const init = () => {
 
 // 滚动
 let scrollHeight = ref(0)
-const scrollChangeData = (scrollTop: number) => {
+const onDownScroll = (scrollTop: number) => {
   let firstChild = scrollBody.value.getElementsByTagName('tr')[0]
   let lastChild = scrollBody.value.getElementsByTagName('tr')[dataList.value.length - 1] //最后一个元素离顶部的距离
   let midChild = scrollBody.value.getElementsByTagName('tr')[pageSize.value] //第一页数据的高度
@@ -127,31 +133,13 @@ const scrollChangeData = (scrollTop: number) => {
     // pageSize.value,8
     // dataList.value.length,24
     // scrollHeight.value,// 936
-    console.log(
-      '滚动多少了',
-      scrollTop,
-      pageNum.value,
-      scrollContainer.value < 200 * props.data.length,
-      // scrollTop - scrollHeight.value,
-      // heightMap.value[pageNum.value - 5],
-      midChild.offsetTop < scrollTop,
-      pageNum.value * pageSize.value < props.data.length,
-      scrollTop - scrollHeight.value < heightMap.value[pageNum.value - 5]
-      // lastChild.offsetTop + lastChild.offsetHeight - midLastChild.offsetTop //118 // lastChild.offsetTop + lastChild.offsetHeight -       midLastChild.offsetTop
-      // dataList.value.length,
-      // scrollHeight.value + lastChild.offsetTop,
-      // lastChild.offsetTop + lastChild.offsetHeight - scrollTop, //>
-      // scrollTop - scrollHeight.value,
-      // scrollTop - scrollHeight.value,
-      // heightMap.value[pageNum.value - 5]
-    )
+    // tableData.value.length,//35
 
-    // console.log('向上了 整个容器高度有没有固定', scrollTop, scrollHeight.value)
     // 渲染出的真实节点的最后一个子节点滚动的位置 加上 本身高度 减去 滚动的偏移量 是否占满不了一屏
     // if (lastChild.offsetTop + lastChild.offsetHeight - scrollTop <= clientHeight.value) {
     if (midChild.offsetTop < scrollTop) {
       // 最后边界不满一页数据也需要加载
-      if ((pageNum.value - 1) * pageSize.value > props.data.length) {
+      if ((pageNum.value - 1) * pageSize.value > tableData.value.length) {
         return
       }
       addDataFn() // 加数据
@@ -169,7 +157,7 @@ const scrollChangeData = (scrollTop: number) => {
       nextTick(() => {
         let second = scrollBody.value.getElementsByTagName('tr')[dataList.value.length - 1]
         heightMap.value[pageNum.value - 1] = second.offsetTop + second.offsetHeight
-
+        oldScrollTop.value = scrollHeight.value
         //加载到最后不满一页 整个屏幕禁止滚动
         if (finished.value && dataList.value.length < pageSize.value * 3) {
           scrollContainer.value = heightMap.value[pageNum.value - 1]
@@ -180,14 +168,26 @@ const scrollChangeData = (scrollTop: number) => {
       })
     }
     // console.log('scrollTop', pageNum.value, scrollTop, firstChild.offsetTop, scrollHeight.value)
-
-    // nextTick(() => {
+  })
+}
+const onUpScroll = (scrollTop: number) => {
+  let firstChild = scrollBody.value.getElementsByTagName('tr')[0]
+  let lastChild = scrollBody.value.getElementsByTagName('tr')[dataList.value.length - 1] //最后一个元素离顶部的距离
+  let midChild = scrollBody.value.getElementsByTagName('tr')[pageSize.value] //第一页数据的高度
+  let midLastChild = scrollBody.value.getElementsByTagName('tr')[pageSize.value * 2] //最后一页第一条数据
+  nextTick(() => {
     // 上滑 向头部添加数据 删除尾部隐藏数据
-    if (
-      scrollTop - scrollHeight.value < heightMap.value[pageNum.value - 5] &&
-      pageNum.value * pageSize.value < props.data.length
-    ) {
+    if (scrollTop - scrollHeight.value < heightMap.value[pageNum.value - 5]) {
+      // if (tableData.value[tableData.value.length - 1].id === tableData.value.length - 1) {
+      //   // scrollContainer.value = 200 * tableData.value.length
+      //   return
+      // }
       // if (midChild.offsetTop > scrollTop) {
+      // 最后三页    5
+      // if (pageNum.value - 1 >= Math.ceil(tableData.value.length / pageSize.value)) {
+      //   console.log('最后三页')
+      //   return
+      // }
       // 最后一页第一条数据滚出可视区域
       // if (  scrollTop<   midLastChild.offsetTop  =scrollTop - scrollHeight.value < 0) {
       // return
@@ -200,7 +200,7 @@ const scrollChangeData = (scrollTop: number) => {
       }
       unshiftDataFn()
       // 容器高度恢复
-      // scrollContainer.value = 200 * props.data.length
+      scrollContainer.value = 200 * tableData.value.length
       let arr = cloneDeep(dataList.value)
       let hiddenHeight = scrollBody.value.getElementsByTagName('tr')[pageSize.value]
       console.log(
@@ -221,12 +221,12 @@ const scrollChangeData = (scrollTop: number) => {
       scrollBody.value.style.paddingTop = scrollHeight.value + 'px'
       // nextTick(() => {
       console.log('头部加数据', finished.value, scrollBody.value.getElementsByTagName('tr')[0].offsetTop)
-
+      oldScrollTop.value = scrollHeight.value
       //加载到最前面 整个屏幕禁止滚动
-      if (finished.value) {
-        scrollBody.value.style.paddingTop = 0 + 'px'
-        return
-      }
+      // if (finished.value) {
+      //   scrollBody.value.style.paddingTop = 0 + 'px'
+      //   return
+      // }
       scrollChangeData(scrollHeight.value)
       // })
     }
@@ -238,8 +238,16 @@ const scrollEvent = (e) => {
   let scrollTop = e.target.scrollTop // 当前滚动的位置
   //  0-pageSize*pageNum
   // 开始/结束位置
-
-  scrollChangeData(scrollTop)
+  console.log('oldScrollTop', scrollTop > oldScrollTop.value)
+  if (scrollTop > oldScrollTop.value) {
+    // 向下滚动
+    onDownScroll(scrollTop)
+  }
+  if (scrollTop < oldScrollTop.value) {
+    // 向下滚动
+    onUpScroll(scrollTop)
+  }
+  // scrollChangeData(scrollTop)
 }
 
 nextTick(() => {
