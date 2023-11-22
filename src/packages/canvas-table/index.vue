@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, nextTick } from 'vue'
+import { calculateTextHeight, getCellWidthMap } from '../util'
 const props = defineProps({
   data: {
     type: Array,
@@ -38,7 +39,11 @@ const props = defineProps({
 const dyCanvas = ref()
 let ctx = null
 // 默认单元格宽高
-let cellWidth = 60
+let cellWidth = computed(() => {
+  let w = dyCanvas.value.getContext('2d').canvas.width
+
+  return 60
+})
 let cellHeight = 25
 
 let row = ref(props.data.length) // 多少行
@@ -50,6 +55,14 @@ let tHeight = computed(() => {
 
 let tableData = ref(props.data)
 let column = ref(props.columns)
+
+// 单元格列宽集合
+let cellWidths = computed(() => {
+  return getCellWidthMap(col.value, props.width, column.value)
+})
+let cellHeights = computed(() => {
+  return getCellHeightMap(row.value, tableData.value, 25)
+})
 
 onMounted(() => {
   ctx = dyCanvas.value.getContext('2d')
@@ -87,6 +100,7 @@ const drawBorder = (ctx, canvasWidth, canvasHeight) => {
   ctx.lineWidth = 1
   ctx.stroke()
 }
+// 画行高
 const drawRows = (ctx, canvasWidth, canvasHeight, row, col) => {
   for (let i = 0; i < row; i++) {
     ctx.beginPath()
@@ -95,23 +109,19 @@ const drawRows = (ctx, canvasWidth, canvasHeight, row, col) => {
     ctx.strokeStyle = '#cccccc'
     ctx.lineWidth = 0.5
     ctx.stroke()
-    // // 文本填充
-    // ctx.moveTo(0, 0)
-    // ctx.font = '12px'
-    // ctx.textAlign = 'center'
-    // ctx.textBaseline = 'middle'
-    // let textWidth = ctx.measureText('row' + i).width
-    // console.log(cellWidth / 2 - textWidth / 8, (cellWidth - textWidth) / 2 + textWidth / 4)
-
-    // // 居中
-    // ctx.fillText('row' + i, Math.floor(cellWidth / 2 - textWidth / 8), i * cellHeight - 0.5 + cellHeight / 2)
   }
 }
+// 画列宽
+// 如果设置列宽 就使用列宽
+// 没有 将剩余未设置的宽度给未设置的均分
 const drawCols = (ctx, canvasWidth, canvasHeight, row, col) => {
+  let start = 0
   for (let i = 0; i < col; i++) {
+    let cellWidth = cellWidths.value[i]
+    start += cellWidth
     ctx.beginPath()
-    ctx.moveTo(i * cellWidth, 0)
-    ctx.lineTo(i * cellWidth, canvasHeight)
+    ctx.moveTo(start, 0)
+    ctx.lineTo(start, canvasHeight)
     ctx.strokeStyle = '#cccccc'
     ctx.lineWidth = 0.5
     ctx.stroke()
@@ -122,6 +132,7 @@ const renderData = (ctx, canvasWidth, canvasHeight, row, col) => {
   // 每一行
   // for (let i = 0; i < col; i++) {
   for (let i = 3; i < 4; i++) {
+    let cellWidth = cellWidths.value[i]
     for (let j = 0; j < row; j++) {
       let textValue = tableData.value[j][column.value[i].prop]
 
@@ -132,39 +143,23 @@ const renderData = (ctx, canvasWidth, canvasHeight, row, col) => {
       let textWidth = textMetrics.width
       let textHeight = cellHeight + textMetrics.actualBoundingBoxAscent - textMetrics.actualBoundingBoxDescent
       // console.log(column.value[i].prop, tableData.value[j][column.value[i].prop])
-      // console.log(textWidth, cellWidth, tableData.value[j][column.value[i].prop])
-      if (textWidth > cellWidth) wrapText(ctx, textValue, cellWidth, i * cellWidth, j * cellHeight, cellHeight)
+      console.log(textWidth, cellWidth, textValue)
+      if (textWidth > cellWidth) {
+        let cellInfo = calculateTextHeight(ctx, textValue, cellWidth, cellHeight)
+        if (cellInfo.needsWrap) {
+          textHeight = cellInfo.totalHeight
+        }
+        console.log('换行渲染', calculateTextHeight(ctx, textValue, cellWidth, cellHeight))
+      }
       // 居中
-      ctx.fillText(
-        textValue,
-        Math.floor(cellWidth / 2 - textWidth / 2) + i * cellWidth,
-        textHeight / 2 + j * cellHeight
-      )
+      else
+        ctx.fillText(
+          textValue,
+          Math.floor(cellWidth / 2 - textWidth / 2) + i * cellWidth,
+          textHeight / 2 + j * cellHeight
+        )
     }
   }
-}
-// 将文本按照指定宽度进行自动换行 TODO:
-const wrapText = (ctx, text, maxWidth, x, y, lineHeight) => {
-  let words = text.split('')
-  let line = ''
-
-  for (let i = 0; i < words.length; i++) {
-    let testLine = line + words[i] + ' '
-    let metrics = ctx.measureText(testLine)
-    let testWidth = metrics.width
-
-    if (testWidth > maxWidth && i > 0) {
-      ctx.fillText(line, x, y)
-      line = words[i] + ''
-      y += lineHeight
-      console.log('line height', line, y)
-    } else {
-      line = testLine
-    }
-  }
-  // console.log(y, lineHeight)
-
-  ctx.fillText(line, x, y)
 }
 </script>
 
