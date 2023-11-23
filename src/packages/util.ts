@@ -57,30 +57,42 @@ export const getCellWidthMap = (size: number, all: number, column: any) => {
 }
 
 // 获取数据行高
-export const getCellHeightMap = (size: number, all: number, height: number = 25) => {
-  let map = {}
-  for (let i = 0; i < size; i++) {
+export const getCellHeightMap = (
+  context: any,
+  size: number,
+  allData: Array<any>,
+  column: any,
+  cellWidth: any,
+  height: number = 20
+) => {
+  let map: any = {}
+
+  for (let j = 0; j < allData.length; j++) {
     // 如果没有换行 就使用默认行高
     // 存在换行 使用具体换行后的高度
-    if (column[i].width) map[i] = column[i].width
-    else {
-      map[i] = otherCellSize
+    let MaxHeight = height
+    for (let i = 0; i < size; i++) {
+      if (column[i]) {
+        let res = calculateTextHeight(context, allData[j][column[i].prop], cellWidth[i], height)
+        if (res.needsWrap) MaxHeight = res.totalHeight
+      }
     }
+    map[j] = MaxHeight
   }
   return map
 }
 
-// 将文本按照指定宽度进行自动换行 TODO:
+// 判断一段文字是否需要换行，换行后高度多少
 export const calculateTextHeight = (context, text, maxWidth, lineHeight) => {
-  var words = text.split('')
-  var line = ''
-  var lines = 1 // 初始行数
-  var totalHeight = lineHeight // 初始总高度
+  let words = text.split('')
+  let line = ''
+  let lines = 1 // 初始行数
+  let totalHeight = lineHeight // 初始总高度
 
-  for (var i = 0; i < words.length; i++) {
-    var testLine = line + words[i] + ' '
-    var metrics = context.measureText(testLine)
-    var testWidth = metrics.width
+  for (let i = 0; i < words.length; i++) {
+    let testLine = line + words[i] + ' '
+    let metrics = context.measureText(testLine)
+    let testWidth = metrics.width
 
     if (testWidth > maxWidth && i > 0) {
       line = words[i] + ' '
@@ -91,4 +103,26 @@ export const calculateTextHeight = (context, text, maxWidth, lineHeight) => {
     }
   }
   return { needsWrap: lines > 1, totalHeight: totalHeight }
+}
+
+// 将文本按照指定宽度进行自动换行
+export const wrapText = (context, text, x, y, maxWidth, lineHeight) => {
+  var words = text.split('')
+  var line = ''
+
+  for (var i = 0; i < words.length; i++) {
+    var testLine = line + words[i] + ''
+    var metrics = context.measureText(testLine)
+    var testWidth = metrics.width
+
+    if (testWidth > maxWidth && i > 0) {
+      context.fillText(line, x, y)
+      line = words[i] + ''
+      y += lineHeight
+    } else {
+      line = testLine
+    }
+  }
+
+  context.fillText(line, x, y)
 }

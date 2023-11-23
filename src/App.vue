@@ -263,7 +263,7 @@ const tableData = ref([
 <template>
   <div>
     <!-- <VirtualTable border :height="400" :data="tableData" :columns="tHeaderConfig" style="width: 100%"></VirtualTable> -->
-    <canvas-Table :height="400" :data="tableData" :columns="tHeaderConfig"></canvas-Table>
+    <canvas-Table :height="2000" :data="tableData" :columns="tHeaderConfig"></canvas-Table>
   </div>
 </template>
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, nextTick } from 'vue'
-import { calculateTextHeight, getCellWidthMap } from '../util'
+import { calculateTextHeight, getCellHeightMap, getCellWidthMap, wrapText } from '../util'
 const props = defineProps({
   data: {
     type: Array,
@@ -44,13 +44,15 @@ let cellWidth = computed(() => {
 
   return 60
 })
-let cellHeight = 25
+let regularHeadHeight = 30 // 固定表头行高
+let regularHeight = 20 // 固定填充文字行高
+let paddingLR = 8 // 固定左右边距
 
 let row = ref(props.data.length) // 多少行
 let col = ref(props.columns.length) //多少列
 let tHeight = computed(() => {
   // props.height?props.height:row*cellHeight
-  return row.value * cellHeight
+  return props.height
 })
 
 let tableData = ref(props.data)
@@ -61,7 +63,14 @@ let cellWidths = computed(() => {
   return getCellWidthMap(col.value, props.width, column.value)
 })
 let cellHeights = computed(() => {
-  return getCellHeightMap(row.value, tableData.value, 25)
+  return getCellHeightMap(
+    dyCanvas.value.getContext('2d'),
+    row.value,
+    tableData.value,
+    column.value,
+    cellWidths.value,
+    regularHeight
+  )
 })
 
 onMounted(() => {
@@ -76,14 +85,14 @@ onMounted(() => {
 
   // 画外框
   drawBorder(ctx, canvasWidth, canvasHeight)
-  // 画行 横线
-  drawRows(ctx, canvasWidth, canvasHeight, row.value, col.value)
+  // 表格头渲染
+  renderTHeader(ctx, canvasWidth, canvasHeight, row.value, col.value, regularHeadHeight)
+  // // 画行 横线
+  drawRows(ctx, canvasWidth, canvasHeight, row.value, col.value, 0, regularHeadHeight)
   // 竖线
-  drawCols(ctx, canvasWidth, canvasHeight, row.value, col.value)
-  // 竖线
-  renderData(ctx, canvasWidth, canvasHeight, row.value, col.value)
-
-  // console.log(props.data, props.columns)
+  drawCols(ctx, canvasWidth, canvasHeight, row.value, col.value, 0, regularHeadHeight)
+  // // 表格数据渲染
+  renderData(ctx, canvasWidth, canvasHeight, row.value, col.value, 0, regularHeadHeight)
 })
 const drawBorder = (ctx, canvasWidth, canvasHeight) => {
   ctx.beginPath()
@@ -101,11 +110,15 @@ const drawBorder = (ctx, canvasWidth, canvasHeight) => {
   ctx.stroke()
 }
 // 画行高
-const drawRows = (ctx, canvasWidth, canvasHeight, row, col) => {
+const drawRows = (ctx, canvasWidth, canvasHeight, row, col, x = 0, y = 0, cellHeightsMap: any = cellHeights.value) => {
+  let start = y
   for (let i = 0; i < row; i++) {
+    let cellHeight = cellHeightsMap[i]
+    start += cellHeight
+
     ctx.beginPath()
-    ctx.moveTo(0, i * cellHeight)
-    ctx.lineTo(canvasWidth, i * cellHeight)
+    ctx.moveTo(0, start)
+    ctx.lineTo(canvasWidth, start)
     ctx.strokeStyle = '#cccccc'
     ctx.lineWidth = 0.5
     ctx.stroke()
@@ -114,8 +127,8 @@ const drawRows = (ctx, canvasWidth, canvasHeight, row, col) => {
 // 画列宽
 // 如果设置列宽 就使用列宽
 // 没有 将剩余未设置的宽度给未设置的均分
-const drawCols = (ctx, canvasWidth, canvasHeight, row, col) => {
-  let start = 0
+const drawCols = (ctx, canvasWidth, canvasHeight, row, col, x = 0, y = 0) => {
+  let start = x
   for (let i = 0; i < col; i++) {
     let cellWidth = cellWidths.value[i]
     start += cellWidth
@@ -127,38 +140,76 @@ const drawCols = (ctx, canvasWidth, canvasHeight, row, col) => {
     ctx.stroke()
   }
 }
-// 文本填充
-const renderData = (ctx, canvasWidth, canvasHeight, row, col) => {
-  // 每一行
-  // for (let i = 0; i < col; i++) {
-  for (let i = 3; i < 4; i++) {
-    let cellWidth = cellWidths.value[i]
-    for (let j = 0; j < row; j++) {
-      let textValue = tableData.value[j][column.value[i].prop]
 
-      ctx.moveTo(i * cellWidth, j * cellHeight)
-      ctx.font = '12px'
+// 文本填充
+const renderData = (ctx, canvasWidth, canvasHeight, row, col, x = 0, y = 0) => {
+  let startX = x
+
+  // 每一行
+  for (let i = 0; i < col; i++) {
+    // 4列 定位的是第一个 x
+    let cellWidth = cellWidths.value[i]
+
+    let startY = y
+    for (let j = 0; j < row; j++) {
+      let cellHeight = cellHeights.value[j]
+
+      let textValue = tableData.value[j][column.value[i].prop]
+      ctx.moveTo(startX, startY)
+      ctx.font = '14px'
       let textMetrics = ctx.measureText(textValue)
 
       let textWidth = textMetrics.width
-      let textHeight = cellHeight + textMetrics.actualBoundingBoxAscent - textMetrics.actualBoundingBoxDescent
-      // console.log(column.value[i].prop, tableData.value[j][column.value[i].prop])
-      console.log(textWidth, cellWidth, textValue)
-      if (textWidth > cellWidth) {
-        let cellInfo = calculateTextHeight(ctx, textValue, cellWidth, cellHeight)
-        if (cellInfo.needsWrap) {
-          textHeight = cellInfo.totalHeight
-        }
-        console.log('换行渲染', calculateTextHeight(ctx, textValue, cellWidth, cellHeight))
-      }
+      let textHeight = startY + textMetrics.actualBoundingBoxAscent - textMetrics.actualBoundingBoxDescent
+      let allTextOffset = (textMetrics.actualBoundingBoxAscent + textMetrics.actualBoundingBoxDescent) * 1.5
+
       // 居中
-      else
-        ctx.fillText(
-          textValue,
-          Math.floor(cellWidth / 2 - textWidth / 2) + i * cellWidth,
-          textHeight / 2 + j * cellHeight
-        )
+      if (textWidth > cellWidth) {
+        // 文字换行
+        // x轴再加上左右边距各一半 startX + paddingLR / 2
+        wrapText(ctx, textValue, startX + paddingLR / 2, 2 * textHeight - startY, cellWidth - paddingLR, regularHeight)
+      } else ctx.fillText(textValue, Math.floor(cellWidth / 2 - textWidth / 2) + startX, startY + allTextOffset)
+      startY += cellHeight
     }
+    startX += cellWidth
+  }
+}
+
+// 头部
+const renderTHeader = (ctx, canvasWidth, canvasHeight, row, col, x = 0, y = 0) => {
+  drawRows(ctx, canvasWidth, 20, 1, col, 0, 0, { 0: regularHeadHeight }) //横线
+  drawCols(ctx, canvasWidth, regularHeadHeight, row, col) // 竖线
+  renderHeadData(ctx, canvasWidth, canvasHeight, 1, col)
+}
+const renderHeadData = (ctx, canvasWidth, canvasHeight, row, col, cellHeight = regularHeadHeight) => {
+  let startX = 0
+
+  // 每一行
+  for (let i = 0; i < col; i++) {
+    // 4列 定位的是第一个 x
+    let cellWidth = cellWidths.value[i]
+
+    let startY = 0
+    for (let j = 0; j < row; j++) {
+      let textValue = column.value[i].label
+      ctx.moveTo(startX, startY)
+      ctx.font = '18px'
+      let textMetrics = ctx.measureText(textValue)
+
+      let textWidth = textMetrics.width
+      let textHeight = startY + textMetrics.actualBoundingBoxAscent - textMetrics.actualBoundingBoxDescent
+      let allTextOffset =
+        (startY + cellHeight + textMetrics.actualBoundingBoxAscent + textMetrics.actualBoundingBoxDescent) / 2
+
+      // 居中
+      if (textWidth > cellWidth) {
+        // 文字换行
+        // x轴再加上左右边距各一半 startX + paddingLR / 2
+        wrapText(ctx, textValue, startX + paddingLR / 2, 2 * textHeight - startY, cellWidth - paddingLR, regularHeight)
+      } else ctx.fillText(textValue, Math.floor(cellWidth / 2 - textWidth / 2) + startX, startY + allTextOffset)
+      startY += cellHeight
+    }
+    startX += cellWidth
   }
 }
 </script>
