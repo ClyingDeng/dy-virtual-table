@@ -196,6 +196,7 @@ const renderTHeader = (ctx, canvasWidth, canvasHeight, row, col, x = 0, y = 0) =
 }
 const renderHeadData = (ctx, canvasWidth, canvasHeight, row, col, cellHeight = regularHeadHeight) => {
   let startX = 0
+
   // 每一行
   for (let i = 0; i < col; i++) {
     // 4列 定位的是第一个 x
