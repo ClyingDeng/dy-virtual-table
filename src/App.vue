@@ -40,7 +40,7 @@ const tableData = ref([
     name: 'deng',
     sex: '女',
     age: '3',
-    address: '上海市青浦区华新镇上海市青浦区华新镇上海市青浦区华新镇上海市青浦区华新镇'
+    address: '2'
   },
   {
     name: 'clying',

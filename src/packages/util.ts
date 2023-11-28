@@ -59,8 +59,8 @@ export const getCellWidthMap = (size: number, all: number, column: any) => {
 // 获取数据行高
 export const getCellHeightMap = (
   context: any,
-  size: number,
-  allData: Array<any>,
+  size: number, // 多少行
+  allData: Array<any>,// 需要渲染的数据
   column: any,
   cellWidth: any,
   height: number = 20
