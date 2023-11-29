@@ -22,8 +22,14 @@ const props = defineProps({
     default() {
       return () => {}
     }
+  },
+  width: {
+    type: Number,
+    default: 600
   }
 })
+let scrollWidthContainer = ref(200 * props.columns.length) // 所有数据的大容器
+const tableHeaderWrapper = ref()
 const setColumnWidth = (column: any) => {
   const realWidth = ref(parseWidth(column.width))
   const realMinWidth = ref(parseMinWidth(column.minWidth))
@@ -40,6 +46,7 @@ const setColumnWidth = (column: any) => {
   column.realWidth = Number(column.width === undefined ? column.minWidth : column.width)
   return column
 }
+
 let headerHeight = computed(() => {
   return tableHeader.value.offsetHeight
 })
@@ -47,20 +54,37 @@ defineExpose({
   headerHeight: headerHeight
 })
 onMounted(() => {
-  // nextTick(() => {
-  //   console.log(tableHeader.value)
-  // })
+  nextTick(() => {
+    tableHeaderWrapper.value.addEventListener('scroll', (e) => scrollEvent(e))
+  })
 })
+
+const scrollEvent = (e) => {
+  let scrollLeft = e.target.scrollLeft // 当前滚动的位置
+  console.log(e.target.scrollLeft)
+
+  //  0-pageSize*pageNum
+  // 开始/结束位置
+  // if (scrollTop > oldScrollTop.value) {
+  //   // 向下滚动
+  //   onDownScroll(scrollTop)
+  // }
+  // if (scrollTop < oldScrollTop.value) {
+  //   // 向下滚动
+  //   onUpScroll(scrollTop)
+  // }
+}
 </script>
 
 <template>
-  <div class="dy-vl-header">
+  <div ref="tableHeaderWrapper" class="dy-vl-header" :style="{ width: width + 'px' }">
     <table
       ref="tableHeader"
       class="dy-table-header dy-table--border-header"
       :border="0"
       cellspacing="0"
       cellpadding="0"
+      :style="{ width: scrollWidthContainer + 'px' }"
     >
       <thead>
         <tr>
@@ -81,29 +105,26 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .dy-vl-header {
+  overflow: auto;
   width: 100%;
+  position: relative;
+  border-right: 1px solid #363637;
 }
 .dy-table-header {
-  position: relative;
-  width: 100%;
+  // width: 100%;
 }
 .dy-table--border-header {
-  // border-left: 0px solid #363637;
-  // border-top: 0px solid #363637;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 .header {
-  width: 100%;
+  // width: 100%;
 }
 .dy-table__cell {
   padding: 0;
   border-bottom: 1px solid #363637;
   border-right: 1px solid #363637;
   box-sizing: border-box;
-  // overflow: hidden;
-  // text-overflow: ellipsis;
-  // white-space: normal;
-  // word-break: break-all;
-  // line-height: 23px;
-  // padding: 0 12px;
 }
 </style>

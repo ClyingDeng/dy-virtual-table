@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import CanvasTable from './packages/canvas-table/index.vue'
-// import VirtualTable from './packages/virtual-table/index.vue'
+// import CanvasTable from './packages/canvas-table/index.vue'
+import VirtualTable from './packages/virtual-table/index.vue'
 const tHeaderConfig = ref([
   {
     label: '姓名',
-    prop: 'name'
+    prop: 'name',
+    width: 100
   },
   {
     label: '性别',
-    prop: 'sex'
+    prop: 'sex',
+    width: 100
   },
   {
     label: '年龄',
@@ -20,6 +22,26 @@ const tHeaderConfig = ref([
     label: '地址',
     prop: 'address',
     width: 260
+  },
+  {
+    label: '职业',
+    prop: 'duty',
+    width: 100
+  },
+  {
+    label: '单位',
+    prop: 'unit',
+    width: 80
+  },
+  {
+    label: '日期1',
+    prop: 'date1',
+    width: 100
+  },
+  {
+    label: '日期2',
+    prop: 'date2',
+    width: 80
   }
 ])
 
@@ -262,8 +284,8 @@ const tableData = ref([
 
 <template>
   <div>
-    <!-- <VirtualTable border :height="400" :data="tableData" :columns="tHeaderConfig" style="width: 100%"></VirtualTable> -->
-    <canvas-Table :height="600" :data="tableData" :columns="tHeaderConfig"></canvas-Table>
+    <VirtualTable border :height="800" :width="200" :data="tableData" :columns="tHeaderConfig"></VirtualTable>
+    <!-- <canvas-Table :height="600" :data="tableData" :columns="tHeaderConfig"></canvas-Table> -->
   </div>
 </template>
 

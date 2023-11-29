@@ -22,13 +22,12 @@ const setHeight = (value: string | number) => {
 }
 
 const bodyHeight = ref()
+const bodyWidth = ref()
 onMounted(() => {
-  // nextTick(() => {
   let allHeight = setHeight(props.height)
   let headerHeight = setHeight(headerWrapper.value.headerHeight || 0)
   bodyHeight.value = allHeight - headerHeight
-  console.log(bodyHeight.value)
-  // })
+  bodyHeight.value = props.width
 })
 // const { scrollBarRef, scrollTo, setScrollLeft, setScrollTop } = useScrollbar()
 </script>
@@ -38,7 +37,7 @@ onMounted(() => {
     <table :border="0" class="dy-table dy-table--border" cellspacing="0" cellpadding="0">
       <table-header ref="headerWrapper" :columns="columns"></table-header>
 
-      <table-body :height="bodyHeight" :columns="columns" :data="data"></table-body>
+      <table-body :height="bodyHeight" :width="bodyWidth" :columns="columns" :data="data"></table-body>
       <tfoot>
         <!-- <tr>
           <td>Sum</td>

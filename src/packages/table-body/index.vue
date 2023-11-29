@@ -16,6 +16,10 @@ const props = defineProps({
     type: Number,
     default: 400
   },
+  width: {
+    type: Number,
+    default: 600
+  },
   columns: {
     type: Array,
     default() {
@@ -56,12 +60,15 @@ const setColumnWidth = (column: any) => {
 let tableWrapper = ref(null)
 let dyTableWrapper = ref(null)
 let scrollBody = ref(null) // 可视区域
-let scrollContainer = ref(200 * props.data.length) // 所有数据的大容器
+let scrollHeightContainer = ref(200 * props.data.length) // 所有数据的大容器
+let scrollWidthContainer = ref(200 * props.columns.length) // 所有数据的大容器
 let clientHeight = ref(props.height) // 容器高度
+let clientWidth = ref(props.width) // 容器宽度
 let dataList = ref<any>([])
 let pageSize = ref(2)
 let pageNum = ref(1)
 let heightMap = ref({})
+let whidthMap = ref({})
 const oldScrollTop = ref(0) // 记录上一次滚动位置 与当前滚动做对比 判断向上还是向下
 
 const addDataFn = () => {
@@ -134,7 +141,7 @@ const onDownScroll = (scrollTop: number) => {
         oldScrollTop.value = scrollTop
         //加载到最后不满一页 整个屏幕禁止滚动
         if (dataList.value.length < pageSize.value * 3) {
-          scrollContainer.value = heightMap.value[pageNum.value - 1]
+          scrollHeightContainer.value = heightMap.value[pageNum.value - 1]
           return
         }
         //滚动触发数据变化
@@ -159,7 +166,7 @@ const onUpScroll = (scrollTop: number) => {
       }
       unshiftDataFn()
       // 容器高度恢复
-      // scrollContainer.value = 200 * props.data.length
+      // scrollHeightContainer.value = 200 * props.data.length
       let arr = cloneDeep(dataList.value)
       // 完全滚出页面的数据高度
       // scrollHeight.value = scrollHeight.value - (hiddenHeight.offsetTop - scrollHeight.value)
@@ -200,14 +207,19 @@ nextTick(() => {
 </script>
 
 <template>
-  <div id="dy-table-scroll-container" ref="tableWrapper" class="dy-vt__wrapper" :style="{ height: height + 'px' }">
+  <div
+    id="dy-table-scroll-container"
+    ref="tableWrapper"
+    class="dy-vt__wrapper"
+    :style="{ height: height + 'px', width: width + 'px' }"
+  >
     <table
       ref="dyTableWrapper"
       class="dy-table--border-wrapper"
       :border="0"
       cellspacing="0"
       cellpadding="0"
-      :style="{ height: scrollContainer + 'px' }"
+      :style="{ height: scrollHeightContainer + 'px', width: scrollWidthContainer + 'px' }"
     >
       <tbody ref="scrollBody" class="scroll-container">
         <!-- <div ref="scrollBody"> -->
@@ -228,10 +240,10 @@ nextTick(() => {
 
 <style lang="scss" scoped>
 .dy-vt__wrapper {
-  overflow-y: auto;
+  overflow: auto;
   width: 100%;
   position: relative;
-  width: 100%;
+  border-right: 1px solid #363637;
 }
 .dy-table--border-wrapper {
   // position: absolute;
