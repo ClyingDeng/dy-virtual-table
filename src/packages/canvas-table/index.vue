@@ -40,7 +40,8 @@ const dyCanvasContent = ref()
 const dyCanvas = ref()
 const dyCanvasHeader = ref()
 let ctx = null
-let scrollContainer = 200 * props.data.length // 所有数据的大容器
+// let scrollContainer = 200 * props.data.length // 所有数据的大容器
+let scrollContainer = 1340 // 所有数据的大容器
 let regularHeadHeight = 30 // 固定表头行高
 let regularHeight = 20 // 固定填充文字行高
 let paddingLR = 8 // 固定左右边距
@@ -118,7 +119,7 @@ const scrollEvent = (e) => {
 }
 
 const onDownScroll = (scrollTop) => {
-  console.log(scrollTop, canvasHeightAll() - props.height)
+  console.log(scrollTop, canvasHeightAll())
   // if (tableData.value.length >= props.data.length) {
   //   dyCanvas.value.getContext('2d').canvas.height = canvasHeightAll()
   //   console.log('fff', canvasHeightAll())
@@ -156,16 +157,18 @@ const renderPageData = (ctx, canvasWidth, canvasHeight = 20, row = 20, col = col
 }
 const renderScrollData = (ctx, canvasWidth, canvasHeight = 20, row = 20, col = column.value.length, x = 0, y = 0) => {
   if (tableData.value.length >= props.data.length) {
-    ctx.canvas.height = canvasHeightAll()
+    // ctx.canvas.height = canvasHeightAll()
     return
   }
+  console.log(canvasHeightAll())
+
   addDataFn()
   let h = canvasHeightAll()
-  console.log(tableData.value, canvasHeightAll())
+  console.log(cellHeights.value, tableData.value.length, canvasHeightAll())
 
-  drawCols(ctx, canvasWidth, h, pageSize.value * (pageNum.value - 1) - 1, col) // 竖线
-  drawRows(ctx, canvasWidth, h, pageSize.value * (pageNum.value - 1) - 1, col, 0, 0, cellHeights.value) //横线
-  renderData(ctx, canvasWidth, h, pageSize.value * (pageNum.value - 1) - 1, col, 0, 0)
+  drawCols(ctx, canvasWidth, h, tableData.value.length - 1, col) // 竖线
+  drawRows(ctx, canvasWidth, h, tableData.value.length - 1, col, 0, 0, cellHeights.value) //横线
+  renderData(ctx, canvasWidth, h, tableData.value.length - 1, col, 0, 0)
 }
 // 文本填充
 const renderData = (ctx, canvasWidth, canvasHeight, row, col, x = 0, y = 0) => {
