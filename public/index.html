@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canvas Virtual List</title>
+</head>
+
+<body>
+  <canvas id="virtualList" width="400" height="300"></canvas>
+  <script>
+    var canvas = document.getElementById('virtualList');
+    var context = canvas.getContext('2d');
+
+    var itemHeight = 30; // 每个列表项的高度
+    var totalItems = 1000; // 总列表项数
+    var visibleItems = Math.ceil(canvas.height / itemHeight); // 可见的列表项数
+
+    // 模拟列表数据
+    var data = [];
+    for (var i = 1; i <= totalItems; i++) {
+      data.push('Item ' + i);
+    }
+
+    function drawList(startIndex, endIndex) {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (var i = startIndex; i <= endIndex; i++) {
+        var y = (i - startIndex) * itemHeight;
+        context.fillStyle = i % 2 === 0 ? '#eee' : '#fff';
+        context.fillRect(0, y, canvas.width, itemHeight);
+        context.fillStyle = '#333';
+        context.fillText(data[i], 10, y + 20);
+      }
+    }
+
+    function handleScroll(event) {
+      var scrollTop = event.target.scrollTop;
+      var startIndex = Math.floor(scrollTop / itemHeight);
+      var endIndex = Math.min(startIndex + visibleItems, totalItems - 1);
+
+      drawList(startIndex, endIndex);
+    }
+
+    // 初始化列表
+    drawList(0, visibleItems - 1);
+
+    // 添加滚动事件监听
+    canvas.addEventListener('scroll', handleScroll);
+  </script>
+</body>
+
+</html>

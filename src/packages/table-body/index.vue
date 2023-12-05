@@ -96,16 +96,28 @@ const init = () => {
       pageSize.value = dataList.value.length
       pageNum.value = 2
       addDataFn()
-      addDataFn()
+      // addDataFn()
       nextTick(() => {
         heightMap.value[0] = 0
         let first = scrollBody.value.getElementsByTagName('tr')[pageSize.value - 1]
         heightMap.value[1] = first.offsetTop + first.offsetHeight
-        let second = scrollBody.value.getElementsByTagName('tr')[pageSize.value * 2 - 1]
-        heightMap.value[2] = second.offsetTop + second.offsetHeight
-        let third = scrollBody.value.getElementsByTagName('tr')[dataList.value.length - 1]
-        heightMap.value[3] = third.offsetTop + third.offsetHeight
-        // console.log('铺满了屏幕 两倍', heightMap.value, dataList.value.length, pageNum.value)
+        if (dataList.value.length >= 2 * pageSize.value) {
+          let second = scrollBody.value.getElementsByTagName('tr')[pageSize.value * 2 - 1]
+          heightMap.value[2] = second.offsetTop + second.offsetHeight
+          addDataFn() // 第三页数据
+          nextTick(() => {
+            let third = scrollBody.value.getElementsByTagName('tr')[dataList.value.length - 1]
+            heightMap.value[3] = third.offsetTop + third.offsetHeight
+            if (dataList.value.length < 3 * pageSize.value) {
+              scrollHeightContainer.value = third.offsetTop + third.offsetHeight
+            }
+          })
+        } else {
+          let second = scrollBody.value.getElementsByTagName('tr')[dataList.value.length - 1]
+          heightMap.value[3] = second.offsetTop + second.offsetHeight
+          // console.log('铺满了屏幕 两倍', heightMap.value, dataList.value.length, pageNum.value)
+          scrollHeightContainer.value = second.offsetTop + second.offsetHeight
+        }
         tableWrapper.value.addEventListener('scroll', (e) => scrollEvent(e))
       })
     }

@@ -26,8 +26,10 @@ const bodyWidth = ref()
 onMounted(() => {
   let allHeight = setHeight(props.height)
   let headerHeight = setHeight(headerWrapper.value.headerHeight || 0)
+  console.log(props.width, headerWrapper.value)
+
   bodyHeight.value = allHeight - headerHeight
-  bodyHeight.value = props.width
+  bodyWidth.value = props.width
 })
 // const { scrollBarRef, scrollTo, setScrollLeft, setScrollTop } = useScrollbar()
 </script>
@@ -35,7 +37,7 @@ onMounted(() => {
 <template>
   <div class="table">
     <table :border="0" class="dy-table dy-table--border" cellspacing="0" cellpadding="0">
-      <table-header ref="headerWrapper" :columns="columns"></table-header>
+      <table-header ref="headerWrapper" :width="bodyWidth" :columns="columns"></table-header>
 
       <table-body :height="bodyHeight" :width="bodyWidth" :columns="columns" :data="data"></table-body>
       <tfoot>

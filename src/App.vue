@@ -4,42 +4,67 @@ import { ref } from 'vue'
 import VirtualTable from './packages/virtual-table/index.vue'
 const tHeaderConfig = ref([
   {
-    label: '姓名',
+    label: '姓名1',
     prop: 'name',
     width: 100
   },
   {
-    label: '性别',
+    label: '性别2',
     prop: 'sex',
     width: 100
   },
   {
-    label: '年龄',
+    label: '年龄3',
     prop: 'age',
     width: 100
   },
   {
-    label: '地址',
+    label: '地址4',
     prop: 'address',
     width: 260
   },
   {
-    label: '职业',
+    label: '职业5',
     prop: 'duty',
     width: 100
   },
   {
-    label: '单位',
+    label: '单位6',
     prop: 'unit',
     width: 80
   },
   {
-    label: '日期1',
+    label: '日期7',
     prop: 'date1',
     width: 100
   },
   {
-    label: '日期2',
+    label: '日期8',
+    prop: 'date2',
+    width: 80
+  },
+  {
+    label: '地址9',
+    prop: 'address',
+    width: 260
+  },
+  {
+    label: '职业10',
+    prop: 'duty',
+    width: 100
+  },
+  {
+    label: '单位11',
+    prop: 'unit',
+    width: 80
+  },
+  {
+    label: '日期12',
+    prop: 'date1',
+    width: 100
+  },
+  {
+    label: '日期13',
     prop: 'date2',
     width: 80
   }
@@ -127,156 +152,156 @@ const tableData = ref([
     sex: '女',
     age: '13',
     address: '上海市青浦区华新镇上海市青浦区华新镇上海市青浦区华新镇上海市青浦区华新镇'
-  },
-  {
-    name: 'clying',
-    sex: '女',
-    age: '14',
-    address: '上海市青浦区华新镇朱长村'
-  },
-  {
-    name: 'Mark',
-    sex: '男',
-    age: '15',
-    address: '上海市青浦区华新镇'
-  },
-  {
-    name: 'join',
-    sex: '男',
-    age: '16',
-    address:
-      '上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路'
-  },
-  {
-    name: 'Mark',
-    sex: '男',
-    age: '17',
-    address: '上海市青浦区华新镇'
-  },
-  {
-    name: 'Mark',
-    sex: '男',
-    age: '18',
-    address: '上海市青浦区华新镇'
-  },
-  {
-    name: 'Mark',
-    sex: '男',
-    age: '19',
-    address: '上海市青浦区华新镇'
-  },
-  {
-    name: 'Mark',
-    sex: '男',
-    age: '20',
-    address: '上海市青浦区华新镇'
-  },
-  {
-    name: 'clying1',
-    sex: '女',
-    age: '21',
-    address: '上海市青浦区华新镇'
-  },
-  {
-    name: '第二',
-    sex: '女',
-    age: '22',
-    address: '上海市青浦区华新镇'
-  },
-  {
-    name: 'deng',
-    sex: '女',
-    age: '23',
-    address: '上海市青浦区华新镇上海市青浦区华新镇上海市青浦区华新镇上海市青浦区华新镇'
-  },
-  {
-    name: 'clying',
-    sex: '女',
-    age: '24',
-    address: '上海市青浦区华新镇朱长村'
-  },
-  {
-    name: 'Mark',
-    sex: '男',
-    age: '25',
-    address: '上海市青浦区华新镇'
-  },
-  {
-    name: 'join',
-    sex: '男',
-    age: '26',
-    address:
-      '上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路'
-  },
-  {
-    name: 'Mark',
-    sex: '男',
-    age: '27',
-    address: '上海市青浦区华新镇'
-  },
-  {
-    name: 'join',
-    sex: '男',
-    age: '28',
-    address:
-      '上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路'
-  },
-  {
-    name: 'join',
-    sex: '男',
-    age: '29',
-    address:
-      '上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路'
-  },
-  {
-    name: 'Mark',
-    sex: '男',
-    age: '30',
-    address: '上海市青浦区华新镇'
-  },
-  {
-    name: 'Mark',
-    sex: '男',
-    age: '31',
-    address: '上海市青浦区华新镇'
-  },
-  {
-    name: 'join',
-    sex: '男',
-    age: '32',
-    address:
-      '上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路'
-  },
-  {
-    name: 'deng',
-    sex: '女',
-    age: '33',
-    address: '上海市青浦区华新镇上海市青浦区华新镇上海市青浦区华新镇上海市青浦区华新镇'
-  },
-  {
-    name: 'clying',
-    sex: '女',
-    age: '34',
-    address: '上海市青浦区华新镇朱长村'
-  },
-  {
-    name: 'Mark',
-    sex: '男',
-    age: '35',
-    address: '上海市青浦区华新镇'
-  },
-  {
-    name: 'clying',
-    sex: '女',
-    age: '34',
-    address: '上海市青浦区华新镇朱长村'
-  },
-  {
-    name: 'Mark',
-    sex: '男',
-    age: '35',
-    address: '上海市青浦区华新镇'
   }
+  // {
+  //   name: 'clying',
+  //   sex: '女',
+  //   age: '14',
+  //   address: '上海市青浦区华新镇朱长村'
+  // },
+  // {
+  //   name: 'Mark',
+  //   sex: '男',
+  //   age: '15',
+  //   address: '上海市青浦区华新镇'
+  // },
+  // {
+  //   name: 'join',
+  //   sex: '男',
+  //   age: '16',
+  //   address:
+  //     '上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路'
+  // },
+  // {
+  //   name: 'Mark',
+  //   sex: '男',
+  //   age: '17',
+  //   address: '上海市青浦区华新镇'
+  // },
+  // {
+  //   name: 'Mark',
+  //   sex: '男',
+  //   age: '18',
+  //   address: '上海市青浦区华新镇'
+  // },
+  // {
+  //   name: 'Mark',
+  //   sex: '男',
+  //   age: '19',
+  //   address: '上海市青浦区华新镇'
+  // },
+  // {
+  //   name: 'Mark',
+  //   sex: '男',
+  //   age: '20',
+  //   address: '上海市青浦区华新镇'
+  // },
+  // {
+  //   name: 'clying1',
+  //   sex: '女',
+  //   age: '21',
+  //   address: '上海市青浦区华新镇'
+  // },
+  // {
+  //   name: '第二',
+  //   sex: '女',
+  //   age: '22',
+  //   address: '上海市青浦区华新镇'
+  // },
+  // {
+  //   name: 'deng',
+  //   sex: '女',
+  //   age: '23',
+  //   address: '上海市青浦区华新镇上海市青浦区华新镇上海市青浦区华新镇上海市青浦区华新镇'
+  // },
+  // {
+  //   name: 'clying',
+  //   sex: '女',
+  //   age: '24',
+  //   address: '上海市青浦区华新镇朱长村'
+  // },
+  // {
+  //   name: 'Mark',
+  //   sex: '男',
+  //   age: '25',
+  //   address: '上海市青浦区华新镇'
+  // },
+  // {
+  //   name: 'join',
+  //   sex: '男',
+  //   age: '26',
+  //   address:
+  //     '上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路'
+  // },
+  // {
+  //   name: 'Mark',
+  //   sex: '男',
+  //   age: '27',
+  //   address: '上海市青浦区华新镇'
+  // },
+  // {
+  //   name: 'join',
+  //   sex: '男',
+  //   age: '28',
+  //   address:
+  //     '上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路'
+  // },
+  // {
+  //   name: 'join',
+  //   sex: '男',
+  //   age: '29',
+  //   address:
+  //     '上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路'
+  // },
+  // {
+  //   name: 'Mark',
+  //   sex: '男',
+  //   age: '30',
+  //   address: '上海市青浦区华新镇'
+  // },
+  // {
+  //   name: 'Mark',
+  //   sex: '男',
+  //   age: '31',
+  //   address: '上海市青浦区华新镇'
+  // },
+  // {
+  //   name: 'join',
+  //   sex: '男',
+  //   age: '32',
+  //   address:
+  //     '上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路'
+  // },
+  // {
+  //   name: 'deng',
+  //   sex: '女',
+  //   age: '33',
+  //   address: '上海市青浦区华新镇上海市青浦区华新镇上海市青浦区华新镇上海市青浦区华新镇'
+  // },
+  // {
+  //   name: 'clying',
+  //   sex: '女',
+  //   age: '34',
+  //   address: '上海市青浦区华新镇朱长村'
+  // },
+  // {
+  //   name: 'Mark',
+  //   sex: '男',
+  //   age: '35',
+  //   address: '上海市青浦区华新镇'
+  // },
+  // {
+  //   name: 'clying',
+  //   sex: '女',
+  //   age: '34',
+  //   address: '上海市青浦区华新镇朱长村'
+  // },
+  // {
+  //   name: 'Mark',
+  //   sex: '男',
+  //   age: '35',
+  //   address: '上海市青浦区华新镇'
+  // }
 ])
 
 // console.log('tableData.value', tableData.value)
