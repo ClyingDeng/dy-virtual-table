@@ -37,6 +37,10 @@ const props = defineProps({
     default() {
       return () => {}
     }
+  },
+  keepScrollLeft: {
+    type: Number,
+    default: 0
   }
 })
 
@@ -201,7 +205,10 @@ const onUpScroll = (scrollTop: number) => {
 
 const scrollEvent = (e) => {
   let scrollTop = e.target.scrollTop // 当前滚动的位置
+  let scrollLeft = e.target.scrollLeft // 当前滚动的位置
   //  0-pageSize*pageNum
+  emits('scrollLeft', scrollLeft)
+  emits('scrollTop', scrollTop)
   // 开始/结束位置
   if (scrollTop > oldScrollTop.value) {
     // 向下滚动
@@ -216,6 +223,18 @@ const scrollEvent = (e) => {
 nextTick(() => {
   init()
 })
+const emits = defineEmits(['scrollLeft', 'scrollTop'])
+defineExpose({})
+watch(
+  () => props.keepScrollLeft,
+  (val, old) => {
+    if (val && val !== old) {
+      tableWrapper.value.scrollLeft = props.keepScrollLeft
+      console.log('keepScrollLeft', props.keepScrollLeft)
+    }
+  },
+  { immediate: true, deep: true }
+)
 </script>
 
 <template>

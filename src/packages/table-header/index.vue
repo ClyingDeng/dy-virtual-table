@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, nextTick, computed } from 'vue'
+import { onMounted, ref, nextTick, watch, emits, computed } from 'vue'
 import DyTableColumn from '../table-column/index.vue'
 import { parseMinWidth, parseWidth } from '../util'
 const tableHeader = ref()
@@ -26,6 +26,10 @@ const props = defineProps({
   width: {
     type: Number,
     default: 600
+  },
+  keepScrollLeft: {
+    type: Number,
+    default: 0
   }
 })
 const setColumnWidth = (column: any) => {
@@ -151,10 +155,10 @@ const onLeftScroll = (scrollLeft: number) => {
     }
   })
 }
-
 const scrollEvent = (e) => {
   let scrollLeft = e.target.scrollLeft // 当前滚动的位置
   console.log(e.target.scrollLeft)
+  emits('scrollLeft', scrollLeft)
   onLeftScroll(scrollLeft)
   //  0-pageSize*pageNum
   // 开始/结束位置
@@ -167,6 +171,7 @@ const scrollEvent = (e) => {
   //   onUpScroll(scrollLeft)
   // }
 }
+const emits = defineEmits(['scrollLeft', 'scrollTop'])
 defineExpose({
   headerHeight: headerHeight
 })
@@ -178,6 +183,16 @@ onMounted(() => {
 nextTick(() => {
   init()
 })
+watch(
+  () => props.keepScrollLeft,
+  (val, old) => {
+    if (val && val !== old) {
+      tableHeaderWrapper.value.scrollLeft = props.keepScrollLeft
+      // console.log('keepScrollLeft', props.keepScrollLeft)
+    }
+  },
+  { immediate: true, deep: true }
+)
 </script>
 
 <template>
