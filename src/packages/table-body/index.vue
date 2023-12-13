@@ -2,7 +2,7 @@
 import { onMounted, ref, nextTick, watch, computed } from 'vue'
 import DyTableColumn from '../table-column/index.vue'
 import { parseMinWidth, parseWidth } from '../util'
-import { cloneDeep,throttle } from 'lodash'
+import { cloneDeep, throttle } from 'lodash'
 
 onMounted(() => {})
 const props = defineProps({
@@ -228,12 +228,15 @@ defineExpose({})
 watch(
   () => props.keepScrollLeft,
   (val, old) => {
-    if (val && val !== old) {
+    if (val !== old) {
       tableWrapper.value.scrollLeft = props.keepScrollLeft
       // console.log('keepScrollLeft', props.keepScrollLeft)
     }
+    if (!val) {
+      tableWrapper.value.scrollLeft = 0
+    }
   },
-  { immediate: true, deep: true }
+  { deep: true }
 )
 </script>
 

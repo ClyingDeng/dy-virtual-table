@@ -191,8 +191,11 @@ watch(
       tableHeaderWrapper.value.scrollLeft = props.keepScrollLeft
       // console.log('keepScrollLeft', props.keepScrollLeft)
     }
+    if (!val) {
+      tableHeaderWrapper.value.scrollLeft = 0
+    }
   },
-  { immediate: true, deep: true }
+  { deep: true }
 )
 </script>
 
