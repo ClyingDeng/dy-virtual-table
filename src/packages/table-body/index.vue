@@ -2,7 +2,7 @@
 import { onMounted, ref, nextTick, watch, computed } from 'vue'
 import DyTableColumn from '../table-column/index.vue'
 import { parseMinWidth, parseWidth } from '../util'
-import { cloneDeep } from 'lodash'
+import { cloneDeep,throttle } from 'lodash'
 
 onMounted(() => {})
 const props = defineProps({
@@ -230,7 +230,7 @@ watch(
   (val, old) => {
     if (val && val !== old) {
       tableWrapper.value.scrollLeft = props.keepScrollLeft
-      console.log('keepScrollLeft', props.keepScrollLeft)
+      // console.log('keepScrollLeft', props.keepScrollLeft)
     }
   },
   { immediate: true, deep: true }
@@ -276,6 +276,23 @@ watch(
   position: relative;
   border-right: 1px solid #363637;
 }
+.dy-vt__wrapper::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.dy-vt__wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dy-vt__wrapper::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+.dy-vt__wrapper::-webkit-scrollbar-thumb:hover {
+  background: transparent;
+}
+
 .dy-table--border-wrapper {
   // position: absolute;
   width: 100%;

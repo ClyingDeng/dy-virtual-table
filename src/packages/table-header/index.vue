@@ -2,6 +2,7 @@
 import { onMounted, ref, nextTick, watch, emits, computed } from 'vue'
 import DyTableColumn from '../table-column/index.vue'
 import { parseMinWidth, parseWidth } from '../util'
+import { cloneDeep } from 'lodash'
 const tableHeader = ref()
 
 const props = defineProps({
@@ -107,14 +108,14 @@ const init = () => {
         whidthMap.value[2] = third.offsetLeft + third.offsetWidth
       }
 
-      console.log(
-        '铺满了三幕 两倍',
-        headDataList.value.length,
-        pageSize.value,
-        whidthMap.value,
-        headDataList.value.length,
-        pageNum.value
-      )
+      // console.log(
+      //   '铺满了三幕 两倍',
+      //   headDataList.value.length,
+      //   pageSize.value,
+      //   whidthMap.value,
+      //   headDataList.value.length,
+      //   pageNum.value
+      // )
       tableHeaderWrapper.value.addEventListener('scroll', (e) => scrollEvent(e))
       // })
     }
@@ -157,7 +158,7 @@ const onLeftScroll = (scrollLeft: number) => {
 }
 const scrollEvent = (e) => {
   let scrollLeft = e.target.scrollLeft // 当前滚动的位置
-  console.log(e.target.scrollLeft)
+  // console.log(e.target.scrollLeft)
   emits('scrollLeft', scrollLeft)
   onLeftScroll(scrollLeft)
   //  0-pageSize*pageNum
@@ -248,5 +249,22 @@ watch(
 }
 .dy-table__cell:last-child {
   border-right: 0px solid #363637;
+}
+
+.dy-vl-header::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.dy-vl-header::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dy-vl-header::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+.dy-vl-header::-webkit-scrollbar-thumb:hover {
+  background: transparent;
 }
 </style>

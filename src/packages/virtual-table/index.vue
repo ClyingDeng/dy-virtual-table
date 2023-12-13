@@ -57,11 +57,15 @@ watch(
 let keepScrollTop = ref(0)
 let keepScrollLeft = ref(0)
 const hScrollLeft = (val: number) => {
-  keepScrollLeft.value = val
+  nextTick(() => {
+    keepScrollLeft.value = val
+  })
   // console.log('hScrollLeft', val)
 }
 const bScrollLeft = (val: number) => {
-  keepScrollLeft.value = val
+  nextTick(() => {
+    keepScrollLeft.value = val
+  })
   console.log('bScrollLeft', val)
 }
 const bScrollTop = (val: number) => {

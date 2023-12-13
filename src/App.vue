@@ -67,6 +67,106 @@ const tHeaderConfig = ref([
     label: '日期13',
     prop: 'date2',
     width: 80
+  },
+  {
+    label: '地址14',
+    prop: 'address',
+    width: 260
+  },
+  {
+    label: '职业15',
+    prop: 'duty',
+    width: 100
+  },
+  {
+    label: '单位16',
+    prop: 'unit',
+    width: 80
+  },
+  {
+    label: '日期17',
+    prop: 'date1',
+    width: 100
+  },
+  {
+    label: '日期18',
+    prop: 'date2',
+    width: 80
+  },
+  {
+    label: '地址19',
+    prop: 'address',
+    width: 260
+  },
+  {
+    label: '职业20',
+    prop: 'duty',
+    width: 100
+  },
+  {
+    label: '姓名21',
+    prop: 'name',
+    width: 100
+  },
+  {
+    label: '性别22',
+    prop: 'sex',
+    width: 100
+  },
+  {
+    label: '年龄23',
+    prop: 'age',
+    width: 100
+  },
+  {
+    label: '地址24',
+    prop: 'address',
+    width: 260
+  },
+  {
+    label: '职业25',
+    prop: 'duty',
+    width: 100
+  },
+  {
+    label: '单位26',
+    prop: 'unit',
+    width: 80
+  },
+  {
+    label: '日期27',
+    prop: 'date1',
+    width: 100
+  },
+  {
+    label: '日期28',
+    prop: 'date2',
+    width: 80
+  },
+  {
+    label: '地址29',
+    prop: 'address',
+    width: 260
+  },
+  {
+    label: '职业30',
+    prop: 'duty',
+    width: 100
+  },
+  {
+    label: '姓名31',
+    prop: 'name',
+    width: 100
+  },
+  {
+    label: '性别32',
+    prop: 'sex',
+    width: 100
+  },
+  {
+    label: '年龄33',
+    prop: 'age',
+    width: 100
   }
 ])
 
@@ -309,7 +409,7 @@ const tableData = ref([
 
 <template>
   <div>
-    <VirtualTable border :height="800" :width="200" :data="tableData" :columns="tHeaderConfig"></VirtualTable>
+    <VirtualTable border :height="800" :width="300" :data="tableData" :columns="tHeaderConfig"></VirtualTable>
     <!-- <canvas-Table :height="600" :data="tableData" :columns="tHeaderConfig"></canvas-Table> -->
   </div>
 </template>
