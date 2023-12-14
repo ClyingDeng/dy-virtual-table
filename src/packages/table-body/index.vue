@@ -41,6 +41,10 @@ const props = defineProps({
   keepScrollLeft: {
     type: Number,
     default: 0
+  },
+  maxWidth: {
+    type: Number,
+    default: 0
   }
 })
 
@@ -238,6 +242,16 @@ watch(
   },
   { deep: true }
 )
+watch(
+  () => props.maxWidth,
+  (val, old) => {
+    if (val) {
+      scrollWidthContainer.value = val
+      // console.log('keepScrollLeft', props.keepScrollLeft)
+    }
+  },
+  { deep: true }
+)
 </script>
 
 <template>
@@ -278,6 +292,14 @@ watch(
   width: 100%;
   position: relative;
   border-right: 1px solid #363637;
+  tr:last-child {
+    .dy-table__cell {
+      border-bottom: 0px solid transparent;
+    }
+  }
+}
+.dy-table__cell:last-child {
+  border-right: 0px solid #363637;
 }
 .dy-vt__wrapper::-webkit-scrollbar {
   width: 0;

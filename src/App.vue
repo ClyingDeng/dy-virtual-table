@@ -173,6 +173,7 @@ const tHeaderConfig = ref([
 const tableData = ref([
   {
     name: 'clying1',
+    sex32: '女',
     sex: '女',
     age: '1',
     address: '上海市青浦区华新镇'
@@ -180,30 +181,35 @@ const tableData = ref([
   {
     name: '第二',
     sex: '女',
+    sex32: '女',
     age: '2',
     address: '上海市青浦区华新镇'
   },
   {
     name: 'deng',
     sex: '女',
+    sex32: '女',
     age: '3',
     address: '2'
   },
   {
     name: 'clying',
     sex: '女',
+    sex32: '女',
     age: '4',
     address: '上海市青浦区华新镇朱长村'
   },
   {
     name: 'Mark',
     sex: '男',
+    sex32: '女',
     age: '5',
     address: '上海市青浦区华新镇'
   },
   {
     name: 'join',
     sex: '男',
+    sex32: '女',
     age: '6',
     address:
       '上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路'
@@ -224,6 +230,7 @@ const tableData = ref([
   {
     name: 'join',
     sex: '男',
+    sex32: '女',
     age: '9',
     address:
       '上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路'
@@ -231,18 +238,21 @@ const tableData = ref([
   {
     name: 'Mark',
     sex: '男',
+    sex32: '女',
     age: '10',
     address: '上海市青浦区华新镇'
   },
   {
     name: 'Mark',
     sex: '男',
+    sex32: '女',
     age: '11',
     address: '上海市青浦区华新镇'
   },
   {
     name: 'join',
     sex: '男',
+    sex32: '女',
     age: '12',
     address:
       '上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路上海市青浦区华新镇朱长村花之路'
@@ -250,6 +260,7 @@ const tableData = ref([
   {
     name: 'deng',
     sex: '女',
+    sex32: '女',
     age: '13',
     address: '上海市青浦区华新镇上海市青浦区华新镇上海市青浦区华新镇上海市青浦区华新镇'
   }

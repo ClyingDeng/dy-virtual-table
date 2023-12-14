@@ -144,6 +144,7 @@ const onLeftScroll = (scrollLeft: number) => {
         //加载到最后不满一页 整个屏幕禁止滚动
         if (headDataList.value.length < pageSize.value * 3) {
           scrollWidthContainer.value = widthMap.value[pageNum.value - 1]
+          emits('maxScrollWidth', scrollWidthContainer.value)
           return
         }
         //滚动触发数据变化
@@ -212,7 +213,7 @@ watch(
   (val, old) => {
     if (val && val !== old) {
       tableHeaderWrapper.value.scrollLeft = props.keepScrollLeft
-      // console.log('keepScrollLeft', props.keepScrollLeft)
+      console.log('keepScrollLeft', props.keepScrollLeft)
     }
     if (!val) {
       tableHeaderWrapper.value.scrollLeft = 0

@@ -57,12 +57,15 @@ watch(
 let keepScrollTop = ref(0)
 let keepScrollLeft = ref(0)
 const hScrollLeft = (val: number) => {
-  // keepScrollLeft.value = val
+  keepScrollLeft.value = val
   // console.log('hScrollLeft', val)
 }
 const bScrollLeft = (val: number) => {
-  // keepScrollLeft.value = val
-  // console.log('bScrollLeft', val)
+  keepScrollLeft.value = val
+}
+const maxWidth = ref(0)
+const maxScrollWidth = (val: number) => {
+  maxWidth.value = val
 }
 const bScrollTop = (val: number) => {
   keepScrollTop.value = val
@@ -79,6 +82,7 @@ const bScrollTop = (val: number) => {
         :width="bodyWidth"
         :columns="columns"
         @scroll-left="hScrollLeft"
+        @max-scroll-width="maxScrollWidth"
       ></table-header>
       <!-- :init-scroll-left="bodyWrapper.scrollLeft || 0" -->
       <!-- :init-scroll-left="headerWrapper.value.scrollLeft || 0" -->
@@ -88,16 +92,12 @@ const bScrollTop = (val: number) => {
         :width="bodyWidth"
         :columns="columns"
         :data="data"
+        :max-width="maxWidth"
         :keep-scroll-left="keepScrollLeft"
         @scroll-left="bScrollLeft"
         @scroll-top="bScrollTop"
       ></table-body>
-      <tfoot>
-        <!-- <tr>
-          <td>Sum</td>
-          <td>$180</td>
-        </tr> -->
-      </tfoot>
+      <tfoot></tfoot>
     </table>
   </div>
 </template>
