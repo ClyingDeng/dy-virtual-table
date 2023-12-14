@@ -57,7 +57,7 @@ let tableHeaderWrapper = ref(null)
 let scrollBody = ref(null) // 可视区域
 let clientWidth = ref(props.width) // 容器宽度
 let headDataList = ref<any>([])
-let whidthMap = ref({}) // 记录宽度
+let widthMap = ref({}) // 记录宽度
 let headerHeight = computed(() => {
   return tableHeader.value.offsetWidth
 })
@@ -88,41 +88,34 @@ const init = () => {
       pageSize.value = headDataList.value.length
       pageNum.value = 2
       addDataFn() // 第二页数据
-
-      whidthMap.value[0] = 0
-      let first = scrollBody.value.getElementsByTagName('th')[pageSize.value - 1]
-      whidthMap.value[1] = first.offsetLeft + first.offsetWidth
-      if (headDataList.value.length >= pageSize.value * 2) {
-        let second = scrollBody.value.getElementsByTagName('th')[pageSize.value * 2 - 1]
-        whidthMap.value[2] = second.offsetLeft + second.offsetWidth
-        addDataFn() // 第三页数据
-        nextTick(() => {
+      nextTick(() => {
+        widthMap.value[0] = 0
+        let first = scrollBody.value.getElementsByTagName('th')[pageSize.value - 1]
+        widthMap.value[1] = first.offsetLeft + first.offsetWidth
+        if (headDataList.value.length >= pageSize.value * 2) {
+          let second = scrollBody.value.getElementsByTagName('th')[pageSize.value * 2 - 1]
+          widthMap.value[2] = second.offsetLeft + second.offsetWidth
+          addDataFn() // 第三页数据
+          nextTick(() => {
+            let third = scrollBody.value.getElementsByTagName('th')[headDataList.value.length - 1]
+            widthMap.value[3] = third.offsetLeft + third.offsetWidth
+            if (headDataList.value.length < pageSize.value * 3)
+              scrollWidthContainer.value = third.offsetLeft + third.offsetWidth
+          })
+        } else {
           let third = scrollBody.value.getElementsByTagName('th')[headDataList.value.length - 1]
-          whidthMap.value[3] = third.offsetLeft + third.offsetWidth
-          if (headDataList.value.length < pageSize.value * 3)
-            scrollWidthContainer.value = third.offsetLeft + third.offsetWidth
-        })
-      } else {
-        let third = scrollBody.value.getElementsByTagName('th')[headDataList.value.length - 1]
-        scrollWidthContainer.value = third.offsetLeft + third.offsetWidth
-        whidthMap.value[2] = third.offsetLeft + third.offsetWidth
-      }
+          scrollWidthContainer.value = third.offsetLeft + third.offsetWidth
+          widthMap.value[2] = third.offsetLeft + third.offsetWidth
+        }
 
-      // console.log(
-      //   '铺满了三幕 两倍',
-      //   headDataList.value.length,
-      //   pageSize.value,
-      //   whidthMap.value,
-      //   headDataList.value.length,
-      //   pageNum.value
-      // )
-      tableHeaderWrapper.value.addEventListener('scroll', (e) => scrollEvent(e))
-      // })
+        console.log('铺满了三屏', headDataList.value.length, pageSize.value, widthMap.value, pageNum.value)
+        tableHeaderWrapper.value.addEventListener('scroll', (e) => scrollEvent(e))
+      })
     }
   })
 }
 // 滚动
-let scrollLeft = ref(0)
+let scrollWidth = ref(0)
 const onLeftScroll = (scrollLeft: number) => {
   let midChild = scrollBody.value.getElementsByTagName('th')[pageSize.value] //第一页数据的高度
   nextTick(() => {
@@ -133,21 +126,24 @@ const onLeftScroll = (scrollLeft: number) => {
         return
       }
       addDataFn() // 加数据
+      // console.log(midChild.offsetLeft, scrollLeft, widthMap.value, pageNum.value)
       let arr = cloneDeep(headDataList.value)
       // 完全滚出页面的数据高度
-      scrollLeft.value = whidthMap.value[pageNum.value - 4]
+      scrollWidth.value = widthMap.value[pageNum.value - 4]
 
       // 数据处理 超出的最前面一页的数据去除
       headDataList.value = arr.slice(Number(pageSize.value), headDataList.value.length)
       // 去除数据后 使用padding占位
-      scrollBody.value.style.paddingTop = scrollLeft.value + 'px'
+      scrollBody.value.style.paddingLeft = scrollWidth.value + 'px'
       nextTick(() => {
-        let second = scrollBody.value.getElementsByTagName('tr')[headDataList.value.length - 1]
-        whidthMap.value[pageNum.value - 1] = second.offsetLeft + second.offsetHeight
+        let second = scrollBody.value.getElementsByTagName('th')[headDataList.value.length - 1]
+        widthMap.value[pageNum.value - 1] = second.offsetLeft + second.offsetWidth
         oldscrollLeft.value = scrollLeft
+        // console.log('headDataList', headDataList.value, pageSize.value)
+
         //加载到最后不满一页 整个屏幕禁止滚动
         if (headDataList.value.length < pageSize.value * 3) {
-          scrollWidthContainer.value = whidthMap.value[pageNum.value - 1]
+          scrollWidthContainer.value = widthMap.value[pageNum.value - 1]
           return
         }
         //滚动触发数据变化
@@ -156,30 +152,57 @@ const onLeftScroll = (scrollLeft: number) => {
     }
   })
 }
+const onRightScroll = (scrollLeft: number) => {
+  // let midChild = scrollBody.value.getElementsByTagName('th')[pageSize.value] //第一页数据的高度
+  nextTick(() => {
+    // 渲染出的真实节点的最后一个子节点滚动的位置 加上 本身高度 减去 滚动的偏移量 是否占满不了一屏
+    if (scrollLeft - scrollWidth.value < widthMap.value[pageNum.value - 5]) {
+      if (pageNum.value <= 3) {
+        scrollBody.value.style.paddingLeft = 0 + 'px'
+        return
+      }
+      unshiftDataFn()
+      let arr = cloneDeep(headDataList.value)
+      // 完全滚出页面的数据高度
+      scrollWidth.value = widthMap.value[pageNum.value - 4]
+
+      // 数据处理 超出的最前面一页的数据去除
+      headDataList.value = arr.slice(0, pageSize.value * 3)
+      // 去除数据后 使用padding占位
+      scrollBody.value.style.paddingLeft = scrollWidth.value + 'px'
+      nextTick(() => {
+        oldscrollLeft.value = scrollWidth.value
+        console.log('headDataList', headDataList.value, pageSize.value)
+
+        //滚动触发数据变化
+        onRightScroll(scrollLeft.value)
+      })
+    }
+  })
+}
 const scrollEvent = (e) => {
   let scrollLeft = e.target.scrollLeft // 当前滚动的位置
-  // console.log(e.target.scrollLeft)
+  // console.log(e.target.scrollLeft, oldscrollLeft.value)
   emits('scrollLeft', scrollLeft)
-  onLeftScroll(scrollLeft)
   //  0-pageSize*pageNum
   // 开始/结束位置
-  // if (scrollLeft > oldscrollLeft.value) {
-  //   // 向下滚动
-  //   onDownScroll(scrollLeft)
-  // }
-  // if (scrollLeft < oldscrollLeft.value) {
-  //   // 向下滚动
-  //   onUpScroll(scrollLeft)
-  // }
+  if (scrollLeft > oldscrollLeft.value) {
+    // 向右滚动
+    onLeftScroll(scrollLeft)
+  }
+  if (scrollLeft < oldscrollLeft.value) {
+    // 向下滚动
+    onRightScroll(scrollLeft)
+  }
 }
 const emits = defineEmits(['scrollLeft', 'scrollTop'])
 defineExpose({
   headerHeight: headerHeight
 })
 onMounted(() => {
-  nextTick(() => {
-    tableHeaderWrapper.value.addEventListener('scroll', (e) => scrollEvent(e))
-  })
+  // nextTick(() => {
+  //   tableHeaderWrapper.value.addEventListener('scroll', (e) => scrollEvent(e))
+  // })
 })
 nextTick(() => {
   init()
@@ -212,13 +235,13 @@ watch(
       <thead ref="scrollBody">
         <tr>
           <th
-            v-for="(column, index) in columns"
+            v-for="(column, index) in headDataList"
             :key="`${column.prop}-thead`"
             class="dy-table__cell"
             :style="{ width: setColumnWidth(column).realWidth + 'px' }"
           >
             <!-- <div class="cell">{{ column.label }}</div> -->
-            <dy-table-column :data="column.label"></dy-table-column>
+            <dy-table-column :data="column.label" :index="index"></dy-table-column>
           </th>
         </tr>
       </thead>

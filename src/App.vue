@@ -45,127 +45,127 @@ const tHeaderConfig = ref([
   },
   {
     label: '地址9',
-    prop: 'address',
+    prop: 'address1',
     width: 260
   },
   {
     label: '职业10',
-    prop: 'duty',
+    prop: 'duty10',
     width: 100
   },
   {
     label: '单位11',
-    prop: 'unit',
+    prop: 'unit11',
     width: 80
   },
   {
     label: '日期12',
-    prop: 'date1',
+    prop: 'date3',
     width: 100
   },
   {
     label: '日期13',
-    prop: 'date2',
+    prop: 'date4',
     width: 80
   },
   {
     label: '地址14',
-    prop: 'address',
+    prop: 'address2',
     width: 260
   },
   {
     label: '职业15',
-    prop: 'duty',
+    prop: 'duty15',
     width: 100
   },
   {
     label: '单位16',
-    prop: 'unit',
+    prop: 'unit16',
     width: 80
   },
   {
     label: '日期17',
-    prop: 'date1',
+    prop: 'date15',
     width: 100
   },
   {
     label: '日期18',
-    prop: 'date2',
+    prop: 'date6',
     width: 80
   },
   {
     label: '地址19',
-    prop: 'address',
+    prop: 'address3',
     width: 260
   },
   {
     label: '职业20',
-    prop: 'duty',
+    prop: 'duty20',
     width: 100
   },
   {
     label: '姓名21',
-    prop: 'name',
+    prop: 'name21',
     width: 100
   },
   {
     label: '性别22',
-    prop: 'sex',
+    prop: 'sex22',
     width: 100
   },
   {
     label: '年龄23',
-    prop: 'age',
+    prop: 'age23',
     width: 100
   },
   {
     label: '地址24',
-    prop: 'address',
+    prop: 'address4',
     width: 260
   },
   {
     label: '职业25',
-    prop: 'duty',
+    prop: 'duty25',
     width: 100
   },
   {
     label: '单位26',
-    prop: 'unit',
+    prop: 'unit26',
     width: 80
   },
   {
     label: '日期27',
-    prop: 'date1',
+    prop: 'date7',
     width: 100
   },
   {
     label: '日期28',
-    prop: 'date2',
+    prop: 'date8',
     width: 80
   },
   {
     label: '地址29',
-    prop: 'address',
+    prop: 'address5',
     width: 260
   },
   {
     label: '职业30',
-    prop: 'duty',
+    prop: 'duty30',
     width: 100
   },
   {
     label: '姓名31',
-    prop: 'name',
+    prop: 'name31',
     width: 100
   },
   {
     label: '性别32',
-    prop: 'sex',
+    prop: 'sex32',
     width: 100
   },
   {
     label: '年龄33',
-    prop: 'age',
+    prop: 'age33',
     width: 100
   }
 ])
