@@ -69,9 +69,9 @@ const addDataFn = (allData = props.columns, changeData = headDataList.value) => 
   pageNum.value++
 }
 // 向上/左添加数据
-const unshiftDataFn = (allData = props.columns, changeData = headDataList.value) => {
+const unshiftDataFn = (allData = props.columns) => {
   let pageData = allData.slice(pageSize.value * (pageNum.value - 5), pageSize.value * (pageNum.value - 4))
-  if (pageData.length) changeData = pageData.concat(changeData)
+  if (pageData.length) headDataList.value = pageData.concat(headDataList.value)
 
   pageNum.value--
 }
@@ -172,7 +172,7 @@ const onRightScroll = (scrollLeft: number) => {
       scrollBody.value.style.paddingLeft = scrollWidth.value + 'px'
       nextTick(() => {
         oldscrollLeft.value = scrollWidth.value
-        console.log('headDataList', headDataList.value, pageSize.value)
+        // console.log('headDataList', headDataList.value, pageSize.value)
 
         //滚动触发数据变化
         onRightScroll(scrollLeft.value)

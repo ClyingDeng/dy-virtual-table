@@ -35,17 +35,17 @@ const tHeaderConfig = ref([
   },
   {
     label: '日期7',
-    prop: 'date1',
+    prop: 'date7',
     width: 100
   },
   {
     label: '日期8',
-    prop: 'date2',
+    prop: 'date8',
     width: 80
   },
   {
     label: '地址9',
-    prop: 'address1',
+    prop: 'address9',
     width: 260
   },
   {
@@ -60,17 +60,17 @@ const tHeaderConfig = ref([
   },
   {
     label: '日期12',
-    prop: 'date3',
+    prop: 'date12',
     width: 100
   },
   {
     label: '日期13',
-    prop: 'date4',
+    prop: 'date13',
     width: 80
   },
   {
     label: '地址14',
-    prop: 'address2',
+    prop: 'address14',
     width: 260
   },
   {
@@ -85,17 +85,17 @@ const tHeaderConfig = ref([
   },
   {
     label: '日期17',
-    prop: 'date15',
+    prop: 'date17',
     width: 100
   },
   {
     label: '日期18',
-    prop: 'date6',
+    prop: 'date18',
     width: 80
   },
   {
     label: '地址19',
-    prop: 'address3',
+    prop: 'address19',
     width: 260
   },
   {
@@ -120,7 +120,7 @@ const tHeaderConfig = ref([
   },
   {
     label: '地址24',
-    prop: 'address4',
+    prop: 'address24',
     width: 260
   },
   {
@@ -135,17 +135,17 @@ const tHeaderConfig = ref([
   },
   {
     label: '日期27',
-    prop: 'date7',
+    prop: 'date27',
     width: 100
   },
   {
     label: '日期28',
-    prop: 'date8',
+    prop: 'date28',
     width: 80
   },
   {
     label: '地址29',
-    prop: 'address5',
+    prop: 'address29',
     width: 260
   },
   {
