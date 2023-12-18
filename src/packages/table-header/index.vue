@@ -31,6 +31,11 @@ const props = defineProps({
   keepScrollLeft: {
     type: Number,
     default: 0
+  },
+  //边框
+  border: {
+    type: Boolean,
+    default: false
   }
 })
 const setColumnWidth = (column: any) => {
@@ -173,8 +178,6 @@ const onRightScroll = (scrollLeft: number) => {
       scrollBody.value.style.paddingLeft = scrollWidth.value + 'px'
       nextTick(() => {
         oldscrollLeft.value = scrollWidth.value
-        // console.log('columnList', columnList.value, pageSizeLR.value)
-
         //滚动触发数据变化
         onRightScroll(scrollLeft.value)
       })
@@ -213,7 +216,6 @@ watch(
   (val, old) => {
     if (val && val !== old) {
       tableHeaderWrapper.value.scrollLeft = props.keepScrollLeft
-      // console.log('keepScrollLeft', props.keepScrollLeft)
     }
     if (!val) {
       tableHeaderWrapper.value.scrollLeft = 0
@@ -224,7 +226,12 @@ watch(
 </script>
 
 <template>
-  <div ref="tableHeaderWrapper" class="dy-vl-header" :style="{ width: width + 'px' }">
+  <div
+    ref="tableHeaderWrapper"
+    class="dy-vl-header"
+    :class="{ 'dy-vl-header-border': border }"
+    :style="{ width: width + 'px' }"
+  >
     <table
       ref="tableHeader"
       class="dy-table-header dy-table--border-header"
@@ -239,6 +246,9 @@ watch(
             v-for="(column, index) in columnList"
             :key="`${column.prop}-thead`"
             class="dy-table__cell"
+            :class="{
+              'dy-table__cell-border': border
+            }"
             :style="{ width: setColumnWidth(column).realWidth + 'px' }"
           >
             <!-- <div class="cell">{{ column.label }}</div> -->
@@ -255,6 +265,8 @@ watch(
   overflow: auto;
   width: 100%;
   position: relative;
+}
+.dy-vl-header-border {
   border-right: 1px solid #363637;
 }
 .dy-table-header {
@@ -268,10 +280,12 @@ watch(
 .header {
   // width: 100%;
 }
+.dy-table__cell-border {
+  border-right: 1px solid #363637;
+}
 .dy-table__cell {
   padding: 0;
   border-bottom: 1px solid #363637;
-  border-right: 1px solid #363637;
   box-sizing: border-box;
 }
 .dy-table__cell:last-child {

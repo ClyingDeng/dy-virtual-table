@@ -75,12 +75,21 @@ const bScrollTop = (val: number) => {
 
 <template>
   <div class="table">
-    <table :border="0" class="dy-table dy-table--border" cellspacing="0" cellpadding="0">
+    <table
+      :border="0"
+      class="dy-table"
+      :class="{
+        'dy-table-border': border
+      }"
+      cellspacing="0"
+      cellpadding="0"
+    >
       <table-header
         ref="headerWrapper"
         :keep-scroll-left="keepScrollLeft"
         :width="bodyWidth"
         :columns="columns"
+        :border="border"
         @scroll-left="hScrollLeft"
         @max-scroll-width="maxScrollWidth"
       ></table-header>
@@ -91,6 +100,7 @@ const bScrollTop = (val: number) => {
         :height="bodyHeight"
         :width="bodyWidth"
         :columns="columns"
+        :border="border"
         :data="data"
         :max-width="maxWidth"
         :keep-scroll-left="keepScrollLeft"
@@ -106,7 +116,7 @@ const bScrollTop = (val: number) => {
 .dy-table {
   position: relative;
 }
-.dy-table--border {
+.dy-table-border {
   border-left: 1px solid #363637;
   border-top: 1px solid #363637;
   border-bottom: 1px solid #363637;

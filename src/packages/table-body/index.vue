@@ -45,6 +45,11 @@ const props = defineProps({
   maxWidth: {
     type: Number,
     default: 0
+  },
+  //边框
+  border: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -445,6 +450,9 @@ const onRightScroll = (scrollLeft: number) => {
     id="dy-table-scroll-container"
     ref="tableWrapper"
     class="dy-vt__wrapper"
+    :class="{
+      'dy-vt__wrapper-border': border
+    }"
     :style="{ height: height + 'px', width: width + 'px' }"
   >
     <table
@@ -462,6 +470,9 @@ const onRightScroll = (scrollLeft: number) => {
             v-for="(column, i) in columnList"
             :key="`tcolumn_${index}_${i}`"
             class="dy-table__cell"
+            :class="{
+              'dy-table__cell-border': border
+            }"
             :style="{
               width: setColumnWidth(column).realWidth + 'px',
               height: heightItemMap[pageSize * (pageNum - 4) + index] + 'px'
@@ -480,13 +491,14 @@ const onRightScroll = (scrollLeft: number) => {
   overflow: auto;
   width: 100%;
   position: relative;
-  border-right: 1px solid #363637;
+  // border-right: 1px solid #363637;
   tr:last-child {
     .dy-table__cell {
       border-bottom: 0px solid transparent;
     }
   }
 }
+
 .dy-table__cell:last-child {
   border-right: 0px solid #363637;
 }
@@ -523,7 +535,7 @@ const onRightScroll = (scrollLeft: number) => {
 .dy-table__cell {
   padding: 0;
   border-bottom: 1px solid #363637;
-  border-right: 1px solid #363637;
+
   box-sizing: border-box;
   // overflow: hidden;
   text-overflow: ellipsis;
@@ -531,5 +543,9 @@ const onRightScroll = (scrollLeft: number) => {
   word-break: break-all;
   line-height: 23px;
   padding: 0 12px;
+}
+.dy-table__cell-border,
+.dy-vt__wrapper-border {
+  border-right: 1px solid #363637;
 }
 </style>

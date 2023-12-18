@@ -465,7 +465,7 @@ const tableData = ref([
 
 <template>
   <div>
-    <VirtualTable border :height="800" :width="300" :data="tableData" :columns="tHeaderConfig"></VirtualTable>
+    <VirtualTable :border="false" :height="800" :width="300" :data="tableData" :columns="tHeaderConfig"></VirtualTable>
     <!-- <canvas-Table :height="600" :data="tableData" :columns="tHeaderConfig"></canvas-Table> -->
   </div>
 </template>
