@@ -223,6 +223,7 @@ watch(
   },
   { deep: true }
 )
+let alignDir = ['center', 'left', 'right']
 </script>
 
 <template>
@@ -246,9 +247,10 @@ watch(
             v-for="(column, index) in columnList"
             :key="`${column.prop}-thead`"
             class="dy-table__cell"
-            :class="{
-              'dy-table__cell-border': border
-            }"
+            :class="[
+              { 'dy-table__cell-border': border },
+              `dy-table_cell-text-${alignDir.includes(column.align) ? column.align : 'center'}`
+            ]"
             :style="{ width: setColumnWidth(column).realWidth + 'px' }"
           >
             <!-- <div class="cell">{{ column.label }}</div> -->
@@ -284,14 +286,24 @@ watch(
   border-right: 1px solid #363637;
 }
 .dy-table__cell {
-  padding: 0;
+  padding: 0 12px;
   border-bottom: 1px solid #363637;
   box-sizing: border-box;
 }
 .dy-table__cell:last-child {
   border-right: 0px solid #363637;
 }
+.dy-table_cell-text-center {
+  text-align: center;
+}
+.dy-table_cell-text-left {
+  text-align: left;
+}
+.dy-table_cell-text-right {
+  text-align: right;
+}
 
+// 滚动条
 .dy-vl-header::-webkit-scrollbar {
   width: 0;
   height: 0;

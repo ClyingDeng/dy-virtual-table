@@ -443,6 +443,7 @@ const onRightScroll = (scrollLeft: number) => {
     }
   })
 }
+let alignDir = ['center', 'left', 'right']
 </script>
 
 <template>
@@ -470,9 +471,10 @@ const onRightScroll = (scrollLeft: number) => {
             v-for="(column, i) in columnList"
             :key="`tcolumn_${index}_${i}`"
             class="dy-table__cell"
-            :class="{
-              'dy-table__cell-border': border
-            }"
+            :class="[
+              { 'dy-table__cell-border': border },
+              `dy-table_cell-text-${alignDir.includes(column.align) ? column.align : 'center'}`
+            ]"
             :style="{
               width: setColumnWidth(column).realWidth + 'px',
               height: heightItemMap[pageSize * (pageNum - 4) + index] + 'px'
@@ -497,6 +499,15 @@ const onRightScroll = (scrollLeft: number) => {
       border-bottom: 0px solid transparent;
     }
   }
+}
+.dy-table_cell-text-center {
+  text-align: center;
+}
+.dy-table_cell-text-left {
+  text-align: left;
+}
+.dy-table_cell-text-right {
+  text-align: right;
 }
 
 .dy-table__cell:last-child {

@@ -121,4 +121,5 @@ const bScrollTop = (val: number) => {
   border-top: 1px solid #363637;
   border-bottom: 1px solid #363637;
 }
+
 </style>

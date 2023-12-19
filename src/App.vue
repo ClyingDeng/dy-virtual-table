@@ -6,16 +6,19 @@ const tHeaderConfig = ref([
   {
     label: '姓名1',
     prop: 'name',
+    align: 'left',
     width: 100
   },
   {
     label: '性别2',
     prop: 'sex',
+    align: 'right',
     width: 100
   },
   {
     label: '年龄3',
     prop: 'age',
+    align: 'center',
     width: 100
   },
   {
