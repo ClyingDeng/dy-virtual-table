@@ -310,7 +310,7 @@ const collectItemHeight = (start = 0, end) => {
   for (let i = 0; i < end - start; i++) {
     heightItemMap.value[start + i] = trs[i].offsetHeight
   }
-  console.log('ddd', end, heightItemMap.value, pageNum.value, pageSize.value)
+  // console.log('ddd', end, heightItemMap.value, pageNum.value, pageSize.value)
 }
 
 // 横向滚动
@@ -493,7 +493,7 @@ let alignDir = ['center', 'left', 'right']
   overflow: auto;
   width: 100%;
   position: relative;
-  // border-right: 1px solid #363637;
+  // border-right: 1px solid #ebeef5;
   tr:last-child {
     .dy-table__cell {
       border-bottom: 0px solid transparent;
@@ -511,7 +511,7 @@ let alignDir = ['center', 'left', 'right']
 }
 
 .dy-table__cell:last-child {
-  border-right: 0px solid #363637;
+  border-right: 0px solid #ebeef5;
 }
 .dy-vt__wrapper::-webkit-scrollbar {
   width: 0;
@@ -544,8 +544,9 @@ let alignDir = ['center', 'left', 'right']
   }
 }
 .dy-table__cell {
+  color: #606266;
   padding: 0;
-  border-bottom: 1px solid #363637;
+  border-bottom: 1px solid #ebeef5;
 
   box-sizing: border-box;
   // overflow: hidden;
@@ -557,6 +558,6 @@ let alignDir = ['center', 'left', 'right']
 }
 .dy-table__cell-border,
 .dy-vt__wrapper-border {
-  border-right: 1px solid #363637;
+  border-right: 1px solid #ebeef5;
 }
 </style>

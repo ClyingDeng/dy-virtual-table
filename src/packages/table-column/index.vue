@@ -8,13 +8,13 @@ const props = defineProps({
   data: {
     type: Object || String,
     default() {
-      return () => {}
+      return {}
     }
   },
   column: {
     type: Object || Function,
     default() {
-      return () => {}
+      return {}
     }
   },
   keyProp: {
@@ -48,4 +48,8 @@ const props = defineProps({
   <div class="cell">{{ keyProp ? data[keyProp] : data }}</div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.cell {
+  
+}
+</style>

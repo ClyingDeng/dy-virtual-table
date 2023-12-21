@@ -114,12 +114,12 @@ const bScrollTop = (val: number) => {
 
 <style lang="scss" scoped>
 .dy-table {
+  font-size: 14px;
   position: relative;
 }
 .dy-table-border {
-  border-left: 1px solid #363637;
-  border-top: 1px solid #363637;
-  border-bottom: 1px solid #363637;
+  border-left: 1px solid #ebeef5;
+  border-top: 1px solid #ebeef5;
+  border-bottom: 1px solid #ebeef5;
 }
-
 </style>
