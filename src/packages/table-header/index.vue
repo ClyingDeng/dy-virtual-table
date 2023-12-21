@@ -269,7 +269,7 @@ let alignDir = ['center', 'left', 'right']
   position: relative;
 }
 .dy-vl-header-border {
-  border-right: 1px solid #363637;
+  border-right: 1px solid #ebeef5;
 }
 .dy-table-header {
   // width: 100%;
@@ -283,15 +283,16 @@ let alignDir = ['center', 'left', 'right']
   // width: 100%;
 }
 .dy-table__cell-border {
-  border-right: 1px solid #363637;
+  border-right: 1px solid #ebeef5;
 }
 .dy-table__cell {
-  padding: 0 12px;
-  border-bottom: 1px solid #363637;
+  color: #909399;
+  padding: 8px 12px;
+  border-bottom: 1px solid #ebeef5;
   box-sizing: border-box;
 }
 .dy-table__cell:last-child {
-  border-right: 0px solid #363637;
+  border-right: 0px solid #ebeef5;
 }
 .dy-table_cell-text-center {
   text-align: center;
