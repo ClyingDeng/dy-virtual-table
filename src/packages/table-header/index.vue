@@ -122,7 +122,7 @@ const initLR = () => {
   })
 }
 // 滚动
-let scrollWidth = ref(0)
+let scrollWidth = ref<any>(0)
 const onLeftScroll = (scrollLeft: number) => {
   let midChild = scrollBody.value.getElementsByTagName('th')[pageSizeLR.value] //第一页数据的高度
   nextTick(() => {
@@ -181,7 +181,7 @@ const onRightScroll = (scrollLeft: number) => {
       nextTick(() => {
         oldscrollLeft.value = scrollWidth.value
         //滚动触发数据变化
-        onRightScroll(scrollLeft.value)
+        onRightScroll(scrollLeft)
       })
     }
   })

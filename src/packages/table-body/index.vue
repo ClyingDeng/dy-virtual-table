@@ -280,6 +280,7 @@ watch(
 )
 watch(
   () => props.maxWidth,
+  // @ts-ignore
   (val, old) => {
     if (val) {
       scrollWidthContainer.value = val
@@ -303,12 +304,13 @@ const heightItemMap = ref({})
 //   },
 //   { deep: true, immediate: true }
 // )
-const collectItemHeight = (start = 0, end) => {
+const collectItemHeight = (start = 0, end: any) => {
   // 30 37
   console.log('item height初始化', pageNum.value, pageSize.value, dataList.value.length)
   let trs = scrollBody.value.getElementsByTagName('tr')
   // let length = trs.length
   for (let i = 0; i < end - start; i++) {
+    // @ts-ignore
     heightItemMap.value[start + i] = trs[i].offsetHeight
   }
   // console.log('ddd', end, heightItemMap.value, pageNum.value, pageSize.value)
@@ -319,7 +321,7 @@ const collectItemHeight = (start = 0, end) => {
 let pageSizeLR = ref(2)
 let pageNumLR = ref(1)
 // let clientWidth = ref(props.width) // 容器宽度
-let widthMap = ref({}) // 记录宽度
+let widthMap = ref<any>({}) // 记录宽度
 let columnList = ref<any>([])
 const oldscrollLeft = ref(0) // 记录上一次滚动位置 与当前滚动做对比 判断向上还是向下
 
@@ -411,7 +413,7 @@ const onLeftScroll = (scrollLeft: number) => {
           return
         }
         //滚动触发数据变化
-        onLeftScroll(scrollLeft.value)
+        onLeftScroll(scrollLeft)
       })
     }
   })
@@ -439,7 +441,7 @@ const onRightScroll = (scrollLeft: number) => {
         // console.log('columnList', columnList.value, pageSizeLR.value)
 
         //滚动触发数据变化
-        onRightScroll(scrollLeft.value)
+        onRightScroll(scrollLeft)
       })
     }
   })
@@ -478,6 +480,7 @@ let alignDir = ['center', 'left', 'right']
             ]"
             :style="{
               width: setColumnWidth(column).realWidth + 'px',
+              // @ts-ignore
               height: heightItemMap[pageSize * (pageNum - 4) + index] + 'px'
             }"
           >
