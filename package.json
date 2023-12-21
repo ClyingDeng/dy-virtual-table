@@ -1,7 +1,7 @@
 {
   "name": "dy-virtual-table",
-  "private": true,
   "version": "1.0.0",
+  "author": "clying",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",
