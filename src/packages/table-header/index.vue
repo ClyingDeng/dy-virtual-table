@@ -1,7 +1,9 @@
 <script setup lang="ts">
+// @ts-ignore
 import { onMounted, ref, nextTick, watch, emits, computed } from 'vue'
 import DyTableColumn from '../table-column/index.vue'
 import { parseMinWidth, parseWidth } from '../util'
+// @ts-ignore
 import { cloneDeep } from 'lodash'
 const tableHeader = ref()
 
@@ -55,14 +57,14 @@ const setColumnWidth = (column: any) => {
   return column
 }
 
-let scrollWidthContainer = ref(200 * props.columns.length) // 所有数据的大容器
+let scrollWidthContainer = ref<number>(200 * props.columns.length) // 所有数据的大容器
 let pageSizeLR = ref(2)
 let pageNumLR = ref(1)
-let tableHeaderWrapper = ref(null)
-let scrollBody = ref(null) // 可视区域
-let clientWidth = ref(props.width) // 容器宽度
+let tableHeaderWrapper = ref<any>(null)
+let scrollBody = ref<any>(null) // 可视区域
+let clientWidth = ref<any>(props.width) // 容器宽度
 let columnList = ref<any>([])
-let widthMap = ref({}) // 记录宽度
+let widthMap = ref<any>({}) // 记录宽度
 let headerHeight = computed(() => {
   return tableHeader.value.offsetWidth
 })
@@ -114,7 +116,7 @@ const initLR = () => {
         }
 
         // console.log('铺满了三屏', columnList.value.length, pageSizeLR.value, widthMap.value, pageNumLR.value)
-        tableHeaderWrapper.value.addEventListener('scroll', (e) => scrollEvent(e))
+        tableHeaderWrapper.value.addEventListener('scroll', (e: any) => scrollEvent(e))
       })
     }
   })
@@ -153,7 +155,7 @@ const onLeftScroll = (scrollLeft: number) => {
           return
         }
         //滚动触发数据变化
-        onLeftScroll(scrollLeft.value)
+        onLeftScroll(scrollLeft)
       })
     }
   })
@@ -184,7 +186,7 @@ const onRightScroll = (scrollLeft: number) => {
     }
   })
 }
-const scrollEvent = (e) => {
+const scrollEvent = (e: any) => {
   let scrollLeft = e.target.scrollLeft // 当前滚动的位置
   // console.log(e.target.scrollLeft, oldscrollLeft.value)
   emits('scrollLeft', scrollLeft)

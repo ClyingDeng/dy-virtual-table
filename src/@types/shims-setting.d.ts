@@ -8,11 +8,13 @@
 import Vue, { VNode, ComponentOptions } from 'vue'
 import { AxiosResponse } from 'axios'
 import { Global } from '@/@types/global'
+import { lodash } from '@/@types/lodash'
 
 declare module 'vue/types/vue' {
   interface Vue {
     GLOBAL: Global
     Event: Vue
+    lodash: lodash
   }
 
   interface VueConstructor<V extends Vue = Vue> {

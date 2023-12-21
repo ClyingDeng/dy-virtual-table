@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, nextTick } from 'vue'
-import { calculateTextHeight, getCellHeightMap, getCellWidthMap, wrapText } from '../util'
+import { computed, onMounted, ref } from 'vue'
+import { getCellHeightMap, getCellWidthMap, wrapText } from '../util'
 const props = defineProps({
   data: {
     type: Array,
@@ -39,11 +39,11 @@ const props = defineProps({
 const dyCanvas = ref()
 let ctx = null
 // 默认单元格宽高
-let cellWidth = computed(() => {
-  let w = dyCanvas.value.getContext('2d').canvas.width
+// let cellWidth = computed(() => {
+//   let w = dyCanvas.value.getContext('2d').canvas.width
 
-  return 60
-})
+//   return 60
+// })
 let regularHeadHeight = 30 // 固定表头行高
 let regularHeight = 20 // 固定填充文字行高
 let paddingLR = 8 // 固定左右边距
@@ -55,11 +55,11 @@ let tHeight = computed(() => {
   return props.height
 })
 
-let tableData = ref(props.data)
-let column = ref(props.columns)
+let tableData = ref<any>(props.data)
+let column = ref<any>(props.columns)
 
 // 单元格列宽集合
-let cellWidths = computed(() => {
+let cellWidths: any = computed(() => {
   return getCellWidthMap(col.value, props.width, column.value)
 })
 let cellHeights = computed(() => {
@@ -107,7 +107,18 @@ onMounted(() => {
   // // 表格数据渲染
   renderData(ctx, canvasWidth, canvasHeight, row.value, col.value, 0, regularHeadHeight)
 })
-const drawBorder = (ctx, canvasWidth, canvasHeight) => {
+const drawBorder = (
+  ctx: {
+    beginPath: () => void
+    moveTo: (arg0: number, arg1: number) => void
+    lineTo: (arg0: number, arg1: number) => void
+    strokeStyle: string
+    lineWidth: number
+    stroke: () => void
+  },
+  canvasWidth: number,
+  canvasHeight: number
+) => {
   ctx.beginPath()
   // 横线
   ctx.moveTo(0, 0)
@@ -123,7 +134,23 @@ const drawBorder = (ctx, canvasWidth, canvasHeight) => {
   ctx.stroke()
 }
 // 画行高
-const drawRows = (ctx, canvasWidth, canvasHeight, row, col, x = 0, y = 0, cellHeightsMap: any = cellHeights.value) => {
+const drawRows = (
+  ctx: {
+    beginPath: () => void
+    moveTo: (arg0: number, arg1: number) => void
+    lineTo: (arg0: any, arg1: number) => void
+    strokeStyle: string
+    lineWidth: number
+    stroke: () => void
+  },
+  canvasWidth: number,
+  _canvasHeight: number,
+  row: number,
+  _col: number,
+  _x = 0,
+  y = 0,
+  cellHeightsMap: any = cellHeights.value
+) => {
   let start = y
   for (let i = 0; i < row; i++) {
     let cellHeight = cellHeightsMap[i]
@@ -140,7 +167,22 @@ const drawRows = (ctx, canvasWidth, canvasHeight, row, col, x = 0, y = 0, cellHe
 // 画列宽
 // 如果设置列宽 就使用列宽
 // 没有 将剩余未设置的宽度给未设置的均分
-const drawCols = (ctx, canvasWidth, canvasHeight, row, col, x = 0, y = 0) => {
+const drawCols = (
+  ctx: {
+    beginPath: () => void
+    moveTo: (arg0: number, arg1: number) => void
+    lineTo: (arg0: number, arg1: any) => void
+    strokeStyle: string
+    lineWidth: number
+    stroke: () => void
+  },
+  _canvasWidth: number,
+  canvasHeight: number,
+  _row: number,
+  col: number,
+  x = 0,
+  _y = 0
+) => {
   let start = x
   for (let i = 0; i < col; i++) {
     let cellWidth = cellWidths.value[i]
@@ -155,7 +197,20 @@ const drawCols = (ctx, canvasWidth, canvasHeight, row, col, x = 0, y = 0) => {
 }
 
 // 文本填充
-const renderData = (ctx, canvasWidth, canvasHeight, row, col, x = 0, y = 0) => {
+const renderData = (
+  ctx: {
+    moveTo: (arg0: number, arg1: number) => void
+    font: string
+    measureText: (arg0: any) => any
+    fillText: (arg0: any, arg1: number, arg2: number) => void
+  },
+  _canvasWidth: number,
+  _canvasHeight: number,
+  row: number,
+  col: number,
+  x = 0,
+  y = 0
+) => {
   let startX = x
 
   // 每一行
@@ -189,12 +244,34 @@ const renderData = (ctx, canvasWidth, canvasHeight, row, col, x = 0, y = 0) => {
 }
 
 // 头部
-const renderTHeader = (ctx, canvasWidth, canvasHeight, row, col, x = 0, y = 0) => {
+const renderTHeader = (
+  ctx: {
+    beginPath: () => void
+    moveTo: (arg0: number, arg1: number) => void
+    lineTo: (arg0: any, arg1: number) => void
+    strokeStyle: string
+    lineWidth: number
+    stroke: () => void
+  },
+  canvasWidth: number,
+  canvasHeight: number,
+  row: number,
+  col: number,
+  _x = 0,
+  _y = 0
+) => {
   drawRows(ctx, canvasWidth, 20, 1, col, 0, 0, { 0: regularHeadHeight }) //横线
   drawCols(ctx, canvasWidth, regularHeadHeight, row, col) // 竖线
   renderHeadData(ctx, canvasWidth, canvasHeight, 1, col)
 }
-const renderHeadData = (ctx, canvasWidth, canvasHeight, row, col, cellHeight = regularHeadHeight) => {
+const renderHeadData = (
+  ctx: any,
+  _canvasWidth: any,
+  _canvasHeight: any,
+  row: number,
+  col: number,
+  cellHeight = regularHeadHeight
+) => {
   let startX = 0
 
   // 每一行

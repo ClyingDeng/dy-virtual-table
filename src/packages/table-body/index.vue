@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { onMounted, ref, nextTick, watch, computed } from 'vue'
+import { onMounted, ref, nextTick, watch } from 'vue'
 import DyTableColumn from '../table-column/index.vue'
 import { parseMinWidth, parseWidth } from '../util'
-import { cloneDeep, throttle } from 'lodash'
+// @ts-ignore
+import { cloneDeep } from 'lodash'
 
 onMounted(() => {})
 const props = defineProps({
@@ -78,17 +79,17 @@ const setColumnWidth = (column: any) => {
 //   })
 //   return 30
 // }
-let tableWrapper = ref(null)
-let dyTableWrapper = ref(null)
-let scrollBody = ref(null) // 可视区域
-let scrollHeightContainer = ref(200 * props.data.length) // 所有数据的大容器
-let scrollWidthContainer = ref(200 * props.columns.length) // 所有数据的大容器
+let tableWrapper = ref<any>(null)
+let dyTableWrapper = ref<any>(null)
+let scrollBody = ref<any>(null) // 可视区域
+let scrollHeightContainer = ref<any>(200 * props.data.length) // 所有数据的大容器
+let scrollWidthContainer = ref<any>(200 * props.columns.length) // 所有数据的大容器
 let clientHeight = ref(props.height) // 容器高度
 let clientWidth = ref(props.width) // 容器宽度
 let dataList = ref<any>([])
 let pageSize = ref(2)
 let pageNum = ref(1)
-let heightMap = ref({})
+let heightMap = ref<any>({})
 const oldScrollTop = ref(0) // 记录上一次滚动位置 与当前滚动做对比 判断向上还是向下
 
 const addDataFn = () => {
@@ -141,7 +142,7 @@ const init = () => {
           collectItemHeight(0, dataList.value.length)
         }
 
-        tableWrapper.value.addEventListener('scroll', (e) => scrollEvent(e))
+        tableWrapper.value.addEventListener('scroll', (e: any) => scrollEvent(e))
       })
     }
   })
@@ -150,10 +151,10 @@ const init = () => {
 // 滚动
 let scrollHeight = ref(0)
 const onDownScroll = (scrollTop: number) => {
-  let firstChild = scrollBody.value
-  let lastChild = scrollBody.value.getElementsByTagName('tr')[dataList.value.length - 1] //最后一个元素离顶部的距离
+  // let firstChild = scrollBody.value
+  // let lastChild = scrollBody.value.getElementsByTagName('tr')[dataList.value.length - 1] //最后一个元素离顶部的距离
   let midChild = scrollBody.value.getElementsByTagName('tr')[pageSize.value] //第一页数据的高度
-  let midLastChild = scrollBody.value.getElementsByTagName('tr')[pageSize.value * 2] //最后一页第一条数据
+  // let midLastChild = scrollBody.value.getElementsByTagName('tr')[pageSize.value * 2] //最后一页第一条数据
   nextTick(() => {
     // 渲染出的真实节点的最后一个子节点滚动的位置 加上 本身高度 减去 滚动的偏移量 是否占满不了一屏
     if (midChild.offsetTop < scrollTop) {
@@ -196,10 +197,10 @@ const onDownScroll = (scrollTop: number) => {
   })
 }
 const onUpScroll = (scrollTop: number) => {
-  let firstChild = scrollBody.value
-  let lastChild = scrollBody.value.getElementsByTagName('tr')[dataList.value.length - 1] //最后一个元素离顶部的距离
-  let midChild = scrollBody.value.getElementsByTagName('tr')[pageSize.value] //第一页数据的高度
-  let midLastChild = scrollBody.value.getElementsByTagName('tr')[pageSize.value * 2] //最后一页第一条数据
+  // let firstChild = scrollBody.value
+  // let lastChild = scrollBody.value.getElementsByTagName('tr')[dataList.value.length - 1] //最后一个元素离顶部的距离
+  // let midChild = scrollBody.value.getElementsByTagName('tr')[pageSize.value] //第一页数据的高度
+  // let midLastChild = scrollBody.value.getElementsByTagName('tr')[pageSize.value * 2] //最后一页第一条数据
   nextTick(() => {
     // 上滑 向头部添加数据 删除尾部隐藏数据
     if (scrollTop - scrollHeight.value < heightMap.value[pageNum.value - 5]) {
@@ -232,7 +233,7 @@ const onUpScroll = (scrollTop: number) => {
   })
 }
 
-const scrollEvent = (e) => {
+const scrollEvent = (e: any) => {
   let scrollTop = e.target.scrollTop // 当前滚动的位置
   let scrollLeft = e.target.scrollLeft // 当前滚动的位置
   //  0-pageSize*pageNum
@@ -368,7 +369,7 @@ const initLR = () => {
         }
 
         console.log('铺满了三屏', columnList.value.length, pageSizeLR.value, widthMap.value, pageNumLR.value)
-        // tableHeaderWrapper.value.addEventListener('scroll', (e) => scrollEvent(e))
+        // tableHeaderWrapper.value.addEventListener('scroll', (e:any) => scrollEvent(e))
       })
     }
   })

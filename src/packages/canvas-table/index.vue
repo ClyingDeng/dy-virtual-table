@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, nextTick } from 'vue'
-import { calculateTextHeight, getCellHeightMap, wrapText } from '../util'
+import { getCellHeightMap, wrapText } from '../util'
 const props = defineProps({
   data: {
     type: Array,
@@ -45,18 +45,18 @@ let scrollContainer = 1340 // 所有数据的大容器
 let regularHeadHeight = 30 // 固定表头行高
 let regularHeight = 20 // 固定填充文字行高
 let paddingLR = 8 // 固定左右边距
-let column = ref(props.columns)
+let column = ref<any>(props.columns)
 let pageSize = ref(2) // 分页
 let pageNum = ref(1)
 let tableData = ref<any>([])
 
 // 单元格列宽集合
-let cellWidths = computed(() => {
+let cellWidths: any = computed(() => {
   // 默认列宽80
   return getCellWidthMap(column.value.length, props.width, column.value)
 })
 const getCellWidthMap = (size: number, all: number, column: any) => {
-  let map = {}
+  let map: any = {}
   let cellWidth = 80
   // 未设置指定宽度的列宽
   let otherSize = all,
@@ -99,11 +99,11 @@ onMounted(() => {
   // 渲染一屏数据
   renderPageData(ctx, props.width, props.height)
   nextTick(() => {
-    dyCanvasContent.value.addEventListener('scroll', (e) => scrollEvent(e))
+    dyCanvasContent.value.addEventListener('scroll', (e: any) => scrollEvent(e))
   })
 })
 
-const scrollEvent = (e) => {
+const scrollEvent = (e: any) => {
   let scrollTop = e.target.scrollTop // 当前滚动的位置
   // console.log(scrollTop, props.height)
   onDownScroll(scrollTop)
@@ -118,7 +118,7 @@ const scrollEvent = (e) => {
   // }
 }
 
-const onDownScroll = (scrollTop) => {
+const onDownScroll = (scrollTop: number) => {
   console.log(scrollTop, canvasHeightAll())
   // if (tableData.value.length >= props.data.length) {
   //   dyCanvas.value.getContext('2d').canvas.height = canvasHeightAll()
@@ -138,7 +138,15 @@ let canvasHeightAll = () => {
   return all
 }
 // 数据
-const renderPageData = (ctx, canvasWidth, canvasHeight = 20, row = 20, col = column.value.length, x = 0, y = 0) => {
+const renderPageData = (
+  ctx: any,
+  canvasWidth: number,
+  canvasHeight = 20,
+  _row = 20,
+  col = column.value.length,
+  _x = 0,
+  _y = 0
+) => {
   addDataFn()
 
   let h = canvasHeightAll()
@@ -155,7 +163,15 @@ const renderPageData = (ctx, canvasWidth, canvasHeight = 20, row = 20, col = col
   drawRows(ctx, canvasWidth, h, pageSize.value * (pageNum.value - 1) - 1, col, 0, 0, cellHeights.value) //横线
   renderData(ctx, canvasWidth, h, pageSize.value * (pageNum.value - 1) - 1, col, 0, 0)
 }
-const renderScrollData = (ctx, canvasWidth, canvasHeight = 20, row = 20, col = column.value.length, x = 0, y = 0) => {
+const renderScrollData = (
+  ctx: any,
+  canvasWidth: number,
+  _canvasHeight = 20,
+  _row = 20,
+  col = column.value.length,
+  _x = 0,
+  _y = 0
+) => {
   if (tableData.value.length >= props.data.length) {
     // ctx.canvas.height = canvasHeightAll()
     return
@@ -171,7 +187,7 @@ const renderScrollData = (ctx, canvasWidth, canvasHeight = 20, row = 20, col = c
   renderData(ctx, canvasWidth, h, tableData.value.length - 1, col, 0, 0)
 }
 // 文本填充
-const renderData = (ctx, canvasWidth, canvasHeight, row, col, x = 0, y = 0) => {
+const renderData = (ctx: any, _canvasWidth: number, _canvasHeight: number, row: number, col: number, x = 0, y = 0) => {
   let startX = x
 
   // 每一行
@@ -210,7 +226,7 @@ const addDataFn = () => {
   pageNum.value++
 }
 // 头部
-const renderTHeader = (ctx, canvasWidth, canvasHeight, row = 0, col = column.value.length) => {
+const renderTHeader = (ctx: any, canvasWidth: number, canvasHeight: number, row = 0, col = column.value.length) => {
   drawRows(ctx, canvasWidth, 20, 1, col, 0, 0, { 0: regularHeadHeight }) //横线
   drawCols(ctx, canvasWidth, regularHeadHeight, row, col) // 竖线
   renderHeadData(ctx, canvasWidth, canvasHeight, 1, col)
@@ -218,7 +234,7 @@ const renderTHeader = (ctx, canvasWidth, canvasHeight, row = 0, col = column.val
 // 画列宽
 // 如果设置列宽 就使用列宽
 // 没有 将剩余未设置的宽度给未设置的均分
-const drawCols = (ctx, canvasWidth, canvasHeight, row, col, x = 0, y = 0) => {
+const drawCols = (ctx: any, _canvasWidth: number, canvasHeight: number, _row: number, col: number, x = 0, _y = 0) => {
   let start = x
 
   for (let i = 0; i < col - 1; i++) {
@@ -234,7 +250,16 @@ const drawCols = (ctx, canvasWidth, canvasHeight, row, col, x = 0, y = 0) => {
   }
 }
 // 画行高
-const drawRows = (ctx, canvasWidth, canvasHeight, row, col, x = 0, y = 0, cellHeightsMap: any) => {
+const drawRows = (
+  ctx: any,
+  canvasWidth: number,
+  _canvasHeight: number,
+  row: number,
+  _col: number,
+  _x = 0,
+  y = 0,
+  cellHeightsMap: any
+) => {
   let start = y
   for (let i = 0; i < row; i++) {
     let cellHeight = cellHeightsMap[i]
@@ -248,7 +273,14 @@ const drawRows = (ctx, canvasWidth, canvasHeight, row, col, x = 0, y = 0, cellHe
     ctx.stroke()
   }
 }
-const renderHeadData = (ctx, canvasWidth, canvasHeight, row, col, cellHeight = regularHeadHeight) => {
+const renderHeadData = (
+  ctx: any,
+  _canvasWidth: any,
+  _canvasHeight: any,
+  row: number,
+  col: number,
+  cellHeight = regularHeadHeight
+) => {
   let startX = 0
 
   // 每一行

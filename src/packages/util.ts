@@ -35,7 +35,7 @@ export const parseHeight = (height: number | string): number | string => {
 // 获取单元格 宽 集合
 // size: 多少份 all: 总共  column 单元格配置
 export const getCellWidthMap = (size: number, all: number, column: any) => {
-  let map = {}
+  let map: any = {}
   // 未设置指定宽度的列宽
   let otherSize = all,
     noSize = 0
@@ -83,7 +83,12 @@ export const getCellHeightMap = (
 }
 
 // 判断一段文字是否需要换行，换行后高度多少
-export const calculateTextHeight = (context, text, maxWidth, lineHeight) => {
+export const calculateTextHeight = (
+  context: { measureText: (arg0: string) => any },
+  text: string,
+  maxWidth: number,
+  lineHeight: number
+) => {
   let words = text.split('')
   let line = ''
   let lines = 1 // 初始行数
@@ -106,7 +111,14 @@ export const calculateTextHeight = (context, text, maxWidth, lineHeight) => {
 }
 
 // 将文本按照指定宽度进行自动换行
-export const wrapText = (context, text, x, y, maxWidth, lineHeight) => {
+export const wrapText = (
+  context: { measureText: (arg0: string) => any; fillText: (arg0: string, arg1: any, arg2: any) => void },
+  text: string,
+  x: any,
+  y: any,
+  maxWidth: number,
+  lineHeight: any
+) => {
   var words = text.split('')
   var line = ''
 

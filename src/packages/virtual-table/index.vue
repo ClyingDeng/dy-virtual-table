@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, nextTick, watch, computed } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import defaultProps from './table-data/defaults'
 import TableHeader from '../table-header/index.vue'
 import TableBody from '../table-body/index.vue'
@@ -15,20 +15,20 @@ const props = defineProps({
   ...defaultProps // element table基础传参
 })
 
-const headerWrapper = ref(null)
+const headerWrapper = ref<any>(null)
 const bodyWrapper = ref(null)
 const setHeight = (value: string | number) => {
   value = parseHeight(value)
   return value
 }
 
-const offsetLeft = ref()
+// const offsetLeft = ref()
 
 const bodyHeight = ref()
 const bodyWidth = ref()
 onMounted(() => {
-  let allHeight = setHeight(props.height)
-  let headerHeight = setHeight(headerWrapper.value.headerHeight || 0)
+  let allHeight: any = setHeight(props.height as number)
+  let headerHeight: any = setHeight(headerWrapper.value.headerHeight || 0)
   console.log(props.width, headerWrapper.value.scrollLeft)
 
   bodyHeight.value = allHeight - headerHeight

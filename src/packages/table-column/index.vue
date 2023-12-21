@@ -1,9 +1,9 @@
 <script setup lang="ts" name="dyTableColumn">
-import { onMounted, ref } from 'vue'
-import { parseWidth, parseMinWidth } from '../util'
+import { onMounted } from 'vue'
+// import { parseWidth, parseMinWidth } from '../util'
 // import { TableColumnCtx } from '../virtual-table/table-data/defaults';
-
 onMounted(() => {})
+// @ts-ignore
 const props = defineProps({
   data: {
     type: Object || String,
@@ -50,6 +50,5 @@ const props = defineProps({
 
 <style lang="scss" scoped>
 .cell {
-  
 }
 </style>
