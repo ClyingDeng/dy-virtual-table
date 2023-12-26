@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="ts" name="DyVirtualTable">
 import { onMounted, ref, watch } from 'vue'
 import defaultProps from './table-data/defaults'
 import TableHeader from '../table-header/index.vue'

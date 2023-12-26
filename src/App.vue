@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 // import CanvasTable from './packages/canvas-table/index.vue'
-import VirtualTable from './packages/virtual-table/index.vue'
+// import VirtualTable from './packages/virtual-table/index.vue'
 const tHeaderConfig = ref([
   {
     label: '姓名1',
@@ -462,13 +462,12 @@ const tableData = ref([
     address: '上海市青浦区华新镇'
   }
 ])
-
-// console.log('tableData.value', tableData.value)
 </script>
 
 <template>
   <div>
-    <VirtualTable :border="false" :height="800" :data="tableData" :columns="tHeaderConfig"></VirtualTable>
+    <!-- <VirtualTable :border="false" :height="800" :data="tableData" :columns="tHeaderConfig"></VirtualTable> -->
+    <dy-virtual-table :border="false" :height="800" :data="tableData" :columns="tHeaderConfig"></dy-virtual-table>
     <!-- <canvas-Table :height="600" :data="tableData" :columns="tHeaderConfig"></canvas-Table> -->
   </div>
 </template>

@@ -9,14 +9,28 @@ const resolve = (p) => path.resolve(__dirname, p)
 // https://vitejs.dev/config/
 export default defineConfig({
   server: {
-  port: 8086,
-  host: '0.0.0.0'
-},
-build: {
-  cssTarget: 'chrome61'
-},
-  plugins: [vue(),    eslintPlugin(),
-    vueSetupExtend(),],
+    port: 8086,
+    host: '0.0.0.0'
+  },
+  build: {
+    lib: {
+      entry: './src/main.ts',
+      name: 'DyVirtualTable'
+    },
+    rollupOptions: {
+      // Make sure to externalize dependencies
+      external: ['vue'],
+      output: {
+        format: 'esm',
+        // Provide global variables to use in the UMD build
+        globals: {
+          vue: 'Vue'
+        }
+      }
+    },
+    cssTarget: 'chrome61'
+  },
+  plugins: [vue(), eslintPlugin(), vueSetupExtend()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src')
