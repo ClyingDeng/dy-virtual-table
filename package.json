@@ -2,11 +2,13 @@
   "name": "dy-virtual-table",
   "version": "1.0.0",
   "author": "clying",
+  "private": false,
+  "main": "./dist/dy-virtual-table",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",
     "preview": "vite preview"
-  },
+},
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^6.9.0",
     "@typescript-eslint/parser": "^6.9.0",

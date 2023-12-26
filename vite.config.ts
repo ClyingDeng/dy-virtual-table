@@ -14,14 +14,19 @@ export default defineConfig({
   },
   build: {
     lib: {
-      entry: './src/main.ts',
+      entry: 'src/packages/index.ts',
       name: 'DyVirtualTable'
     },
     rollupOptions: {
+      // input: {
+      //   // main: 'dist/dy-virtual-table.umd.js', // 这是你的主入口文件，可以根据实际情况修改
+      //   main: 'src/packages/index.ts' // 这是你想要打包的文件夹
+      // },
+
       // Make sure to externalize dependencies
       external: ['vue'],
       output: {
-        format: 'esm',
+        format: 'es',
         // Provide global variables to use in the UMD build
         globals: {
           vue: 'Vue'

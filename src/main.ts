@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 
 import App from './App.vue'
 import DyVirtualTable from './packages/index'
+// import DyVirtualTable from '../dist/dy-virtual-table'
 
 createApp(App).use(DyVirtualTable).mount('#app')
 
