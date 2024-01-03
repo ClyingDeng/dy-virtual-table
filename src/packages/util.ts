@@ -89,7 +89,7 @@ export const calculateTextHeight = (
   maxWidth: number,
   lineHeight: number
 ) => {
-  let words = text.split('')
+  let words = text ? text.split('') : []
   let line = ''
   let lines = 1 // 初始行数
   let totalHeight = lineHeight // 初始总高度
