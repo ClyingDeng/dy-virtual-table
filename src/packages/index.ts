@@ -4,8 +4,7 @@ import CanvasTable from './canvas-table/index.vue'
 let components = [DyVirtualTable, CanvasTable]
 const install = (Vue: any) => {
   components.forEach((_: any) => {
-    Vue.component('DyVirtualTable', _)
-    Vue.component('CanvasTable', _)
+    Vue.component(_.name, _)
   })
 }
 

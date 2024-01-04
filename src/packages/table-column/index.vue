@@ -6,7 +6,7 @@ onMounted(() => {})
 // @ts-ignore
 const props = defineProps({
   data: {
-    type: Object || String,
+    type: [Object, String],
     default() {
       return {}
     }
