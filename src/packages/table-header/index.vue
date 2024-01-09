@@ -37,7 +37,7 @@ const props = defineProps({
   //边框
   border: {
     type: Boolean,
-    default: false
+    default: true
   }
 })
 const setColumnWidth = (column: any) => {
@@ -86,6 +86,9 @@ const unshiftDataFnLR = (allData = props.columns) => {
 const initLR = () => {
   addDataFnLR() // 加载一屏数据
   nextTick(() => {
+    // console.log(columnList.value.length, Number(pageSizeLR.value * (pageNumLR.value - 1)))
+    scrollWidthContainer.value = props.width
+    // let lastChild = scrollBody.value.getElementsByTagName('th')[Number(pageSizeLR.value * (pageNumLR.value - 1)) - 1] //最后一个元素离顶部的距离
     let lastChild = scrollBody.value.getElementsByTagName('th')[Number(pageSizeLR.value * (pageNumLR.value - 1)) - 1] //最后一个元素离顶部的距离
     // 没铺满屏幕 继续加数据
     if (lastChild.offsetLeft + lastChild.offsetWidth < clientWidth.value) {
@@ -150,6 +153,8 @@ const onLeftScroll = (scrollLeft: number) => {
 
         //加载到最后不满一页 整个屏幕禁止滚动
         if (columnList.value.length < pageSizeLR.value * 3) {
+          console.log('widthMap.value', widthMap.value)
+
           scrollWidthContainer.value = widthMap.value[pageNumLR.value - 1]
           emits('maxScrollWidth', scrollWidthContainer.value)
           return
@@ -288,6 +293,7 @@ let alignDir = ['center', 'left', 'right']
   border-right: 1px solid #ebeef5;
 }
 .dy-table__cell {
+  background-color: #fff;
   color: #909399;
   padding: 8px 12px;
   border-bottom: 1px solid #ebeef5;

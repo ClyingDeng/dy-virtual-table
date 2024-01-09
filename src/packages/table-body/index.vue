@@ -50,7 +50,7 @@ const props = defineProps({
   //边框
   border: {
     type: Boolean,
-    default: false
+    default: true
   }
 })
 
@@ -67,7 +67,8 @@ const setColumnWidth = (column: any) => {
   if (!column.minWidth) {
     column.minWidth = 80
   }
-  column.realWidth = Number(column.width === undefined ? column.minWidth : column.width)
+  column.realWidth = Number(!column.width ? column.minWidth : column.width)
+  console.log(column)
   return column
 }
 
@@ -109,6 +110,7 @@ const init = () => {
   addDataFn() // 加载一屏数据
   nextTick(() => {
     let lastChild = scrollBody.value.getElementsByTagName('tr')[Number(pageSize.value * (pageNum.value - 1)) - 1] //最后一个元素离顶部的距离
+    scrollWidthContainer.value = props.width
     // 没铺满屏幕 继续加数据
     if (lastChild.offsetTop + lastChild.offsetHeight < clientHeight.value) {
       init()
@@ -176,13 +178,13 @@ const onDownScroll = (scrollTop: number) => {
         heightMap.value[pageNum.value - 1] = second.offsetTop + second.offsetHeight
         oldScrollTop.value = scrollTop
 
-        console.log(
-          'item height更新',
-          pageNum.value,
-          pageSize.value * (pageNum.value - 4),
-          pageSize.value * (pageNum.value - 4) + dataList.value.length,
-          dataList.value.length
-        )
+        // console.log(
+        //   'item height更新',
+        //   pageNum.value,
+        //   pageSize.value * (pageNum.value - 4),
+        //   pageSize.value * (pageNum.value - 4) + dataList.value.length,
+        //   dataList.value.length
+        // )
         collectItemHeight(pageSize.value * 3, pageSize.value * (pageNum.value - 4) + dataList.value.length)
 
         //加载到最后不满一页 整个屏幕禁止滚动
@@ -306,7 +308,7 @@ const heightItemMap = ref({})
 // )
 const collectItemHeight = (start = 0, end: any) => {
   // 30 37
-  console.log('item height初始化', pageNum.value, pageSize.value, dataList.value.length)
+  // console.log('item height初始化', pageNum.value, pageSize.value, dataList.value.length)
   let trs = scrollBody.value.getElementsByTagName('tr')
   // let length = trs.length
   for (let i = 0; i < end - start; i++) {
@@ -341,7 +343,7 @@ const initLR = () => {
   addDataFnLR() // 加载一屏数据
   nextTick(() => {
     let lastChild = scrollBody.value.getElementsByTagName('td')[Number(pageSizeLR.value * (pageNumLR.value - 1)) - 1] //最后一个元素离顶部的距离
-    console.log(scrollBody.value, columnList.value, Number(pageSizeLR.value * (pageNumLR.value - 1)) - 1)
+    // console.log(scrollBody.value, columnList.value, Number(pageSizeLR.value * (pageNumLR.value - 1)) - 1)
     // 没铺满屏幕 继续加数据
     if (lastChild.offsetLeft + lastChild.offsetWidth < clientWidth.value) {
       initLR()
@@ -370,7 +372,7 @@ const initLR = () => {
           widthMap.value[2] = third.offsetLeft + third.offsetWidth
         }
 
-        console.log('铺满了三屏', columnList.value.length, pageSizeLR.value, widthMap.value, pageNumLR.value)
+        // console.log('铺满了三屏', columnList.value.length, pageSizeLR.value, widthMap.value, pageNumLR.value)
         // tableHeaderWrapper.value.addEventListener('scroll', (e:any) => scrollEvent(e))
       })
     }
@@ -545,6 +547,9 @@ let alignDir = ['center', 'left', 'right']
     background-color: red;
   }
   .scroll-container {
+    .dy-vt-wrapper {
+      background-color: #fff;
+    }
   }
 }
 .dy-table__cell {

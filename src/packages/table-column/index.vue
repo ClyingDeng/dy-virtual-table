@@ -42,10 +42,12 @@ const props = defineProps({
     default: 0
   }
 })
+// @ts-ignore
+let result: any = props.data[props.keyProp]
 </script>
 
 <template>
-  <div class="cell">{{ keyProp ? data[keyProp] : data }}</div>
+  <div class="cell">{{ keyProp ? result : data }}</div>
 </template>
 
 <style lang="scss" scoped>

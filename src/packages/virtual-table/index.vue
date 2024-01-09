@@ -12,7 +12,12 @@ const props = defineProps({
       return []
     }
   },
-  ...defaultProps // element table基础传参
+  ...defaultProps, // element table基础传参
+  //边框
+  border: {
+    type: Boolean,
+    default: true
+  }
 })
 
 const headerWrapper = ref<any>(null)
@@ -74,7 +79,7 @@ const bScrollTop = (val: number) => {
 </script>
 
 <template>
-  <div class="table">
+  <div class="dy-vtable">
     <table
       :border="0"
       class="dy-table"
@@ -113,13 +118,16 @@ const bScrollTop = (val: number) => {
 </template>
 
 <style lang="scss" scoped>
-.dy-table {
-  font-size: 14px;
-  position: relative;
-}
-.dy-table-border {
-  border-left: 1px solid #ebeef5;
-  border-top: 1px solid #ebeef5;
-  border-bottom: 1px solid #ebeef5;
+.dy-vtable {
+  .dy-table {
+    font-size: 14px;
+    position: relative;
+    margin: 0;
+  }
+  .dy-table-border {
+    border-left: 1px solid #ebeef5;
+    border-top: 1px solid #ebeef5;
+    border-bottom: 1px solid #ebeef5;
+  }
 }
 </style>

@@ -50,10 +50,10 @@ let paddingLR = 8 // 固定左右边距
 
 let row = ref(props.data.length) // 多少行
 let col = ref(props.columns.length) //多少列
-let tHeight = computed(() => {
-  // props.height?props.height:row*cellHeight
-  return props.height
-})
+// let tHeight = computed(() => {
+//   // props.height?props.height:row*cellHeight
+//   return props.height
+// })
 
 let tableData = ref<any>(props.data)
 let column = ref<any>(props.columns)
@@ -95,7 +95,7 @@ onMounted(() => {
   ctx.canvas.height = canvasHeightAll()
   let canvasWidth = canvasWidthAll()
   let canvasHeight = canvasHeightAll()
-
+  // ctx.scale(window.devicePixelRatio, window.devicePixelRatio)
   // 画外框
   drawBorder(ctx, canvasWidth, canvasHeight)
   // 表格头渲染
@@ -305,16 +305,19 @@ const renderHeadData = (
 </script>
 
 <template>
-  <div class="canvas-table" :style="{ height: tHeight + 'px', width: width + 'px' }">
-    <canvas ref="dyCanvas" :width="width" :height="tHeight">
-      抱歉，你的浏览器不支持 canvas 元素 （这些内容将会在不支持&lt;canvas%gt;元素的浏览器或是禁用了 JavaScript
-      的浏览器内渲染并展现）
-    </canvas>
-  </div>
+  <!-- <div class="canvas-table" :style="{ height: tHeight + 'px', width: width + 'px' }"> -->
+  <canvas ref="dyCanvas">
+    抱歉，你的浏览器不支持 canvas 元素 （这些内容将会在不支持&lt;canvas%gt;元素的浏览器或是禁用了 JavaScript
+    的浏览器内渲染并展现）
+  </canvas>
+  <!-- </div> -->
 </template>
 
 <style lang="scss" scoped>
 .canvas-table {
   overflow: auto;
+}
+canvas {
+  image-rendering: optimizeQuality; /* 或者 -webkit-optimize-contrast */
 }
 </style>
