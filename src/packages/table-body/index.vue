@@ -65,10 +65,10 @@ const setColumnWidth = (column: any) => {
     column.width = undefined
   }
   if (!column.minWidth) {
-    column.minWidth = 80
+    // column.minWidth = 80
   }
   column.realWidth = Number(!column.width ? column.minWidth : column.width)
-  console.log(column)
+
   return column
 }
 
@@ -340,12 +340,13 @@ const unshiftDataFnLR = (allData = props.columns) => {
   pageNumLR.value--
 }
 const initLR = () => {
+
   addDataFnLR() // 加载一屏数据
   nextTick(() => {
     let lastChild = scrollBody.value.getElementsByTagName('td')[Number(pageSizeLR.value * (pageNumLR.value - 1)) - 1] //最后一个元素离顶部的距离
     // console.log(scrollBody.value, columnList.value, Number(pageSizeLR.value * (pageNumLR.value - 1)) - 1)
     // 没铺满屏幕 继续加数据
-    if (lastChild.offsetLeft + lastChild.offsetWidth < clientWidth.value) {
+    if (lastChild && lastChild.offsetLeft + lastChild.offsetWidth < clientWidth.value) {
       initLR()
     } else {
       // 铺满后，设置两倍数据方便滚动
@@ -541,11 +542,7 @@ let alignDir = ['center', 'left', 'right']
   width: 100%;
   display: flex;
   flex-direction: column;
-  .padding-block {
-    width: 100%;
-    position: absolute;
-    background-color: red;
-  }
+
   .scroll-container {
     .dy-vt-wrapper {
       background-color: #fff;

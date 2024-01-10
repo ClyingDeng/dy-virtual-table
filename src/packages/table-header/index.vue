@@ -8,6 +8,10 @@ import { cloneDeep } from 'lodash'
 const tableHeader = ref()
 
 const props = defineProps({
+  maxWidth: {
+    type: Number,
+    default: 0
+  },
   columns: {
     type: Array,
     default() {
@@ -41,6 +45,8 @@ const props = defineProps({
   }
 })
 const setColumnWidth = (column: any) => {
+  console.log(column)
+
   const realWidth = ref(parseWidth(column.width))
   const realMinWidth = ref(parseMinWidth(column.minWidth))
   if (realWidth.value) column.width = realWidth.value
@@ -51,13 +57,15 @@ const setColumnWidth = (column: any) => {
     column.width = undefined
   }
   if (!column.minWidth) {
-    column.minWidth = 80
+    // column.minWidth = 80
   }
-  column.realWidth = Number(column.width === undefined ? column.minWidth : column.width)
+  column.realWidth = Number(!column.width ? column.minWidth : column.width)
+
   return column
 }
 
-let scrollWidthContainer = ref<number>(200 * props.columns.length) // 所有数据的大容器
+// let scrollWidthContainer = ref<number>(200 * props.columns.length) // 所有数据的大容器
+let scrollWidthContainer = ref<number>(props.width) // 所有数据的大容器
 let pageSizeLR = ref(2)
 let pageNumLR = ref(1)
 let tableHeaderWrapper = ref<any>(null)
@@ -87,11 +95,10 @@ const initLR = () => {
   addDataFnLR() // 加载一屏数据
   nextTick(() => {
     // console.log(columnList.value.length, Number(pageSizeLR.value * (pageNumLR.value - 1)))
-    scrollWidthContainer.value = props.width
     // let lastChild = scrollBody.value.getElementsByTagName('th')[Number(pageSizeLR.value * (pageNumLR.value - 1)) - 1] //最后一个元素离顶部的距离
     let lastChild = scrollBody.value.getElementsByTagName('th')[Number(pageSizeLR.value * (pageNumLR.value - 1)) - 1] //最后一个元素离顶部的距离
     // 没铺满屏幕 继续加数据
-    if (lastChild.offsetLeft + lastChild.offsetWidth < clientWidth.value) {
+    if (lastChild && lastChild.offsetLeft + lastChild.offsetWidth < clientWidth.value) {
       initLR()
     } else {
       // 铺满后，设置两倍数据方便滚动
@@ -114,7 +121,10 @@ const initLR = () => {
           })
         } else {
           let third = scrollBody.value.getElementsByTagName('th')[columnList.value.length - 1]
-          scrollWidthContainer.value = third.offsetLeft + third.offsetWidth
+          let w = third.offsetLeft + third.offsetWidth
+
+          scrollWidthContainer.value = w < props.width ? props.width : w
+
           widthMap.value[2] = third.offsetLeft + third.offsetWidth
         }
 
@@ -153,7 +163,7 @@ const onLeftScroll = (scrollLeft: number) => {
 
         //加载到最后不满一页 整个屏幕禁止滚动
         if (columnList.value.length < pageSizeLR.value * 3) {
-          console.log('widthMap.value', widthMap.value)
+          // console.log('widthMap.value', widthMap.value)
 
           scrollWidthContainer.value = widthMap.value[pageNumLR.value - 1]
           emits('maxScrollWidth', scrollWidthContainer.value)
@@ -214,6 +224,7 @@ onMounted(() => {
   // nextTick(() => {
   //   tableHeaderWrapper.value.addEventListener('scroll', (e) => scrollEvent(e))
   // })
+  scrollWidthContainer.value = props.width
 })
 nextTick(() => {
   initLR()
@@ -230,6 +241,17 @@ watch(
   },
   { deep: true }
 )
+watch(
+  () => props.maxWidth,
+  // @ts-ignore
+  (val, old) => {
+    if (val) {
+      scrollWidthContainer.value = val
+      // console.log('keepScrollLeft', props.keepScrollLeft)
+    }
+  },
+  { deep: true }
+)
 let alignDir = ['center', 'left', 'right']
 </script>
 
@@ -240,6 +262,7 @@ let alignDir = ['center', 'left', 'right']
     :class="{ 'dy-vl-header-border': border }"
     :style="{ width: width + 'px' }"
   >
+    {{ scrollWidthContainer }}
     <table
       ref="tableHeader"
       class="dy-table-header dy-table--border-header"
@@ -293,11 +316,22 @@ let alignDir = ['center', 'left', 'right']
   border-right: 1px solid #ebeef5;
 }
 .dy-table__cell {
-  background-color: #fff;
-  color: #909399;
-  padding: 8px 12px;
+  // background-color: #fff;
+  // color: #909399;
+  // padding: 8px 12px;
+  // border-bottom: 1px solid #ebeef5;
+  // box-sizing: border-box;
+  color: #606266;
+  padding: 0;
   border-bottom: 1px solid #ebeef5;
+
   box-sizing: border-box;
+  // overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  word-break: break-all;
+  line-height: 23px;
+  padding: 0 12px;
 }
 .dy-table__cell:last-child {
   border-right: 0px solid #ebeef5;

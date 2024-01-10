@@ -34,7 +34,7 @@ const bodyWidth = ref()
 onMounted(() => {
   let allHeight: any = setHeight(props.height as number)
   let headerHeight: any = setHeight(headerWrapper.value.headerHeight || 0)
-  console.log(props.width, headerWrapper.value.scrollLeft)
+  // console.log(props.width, headerWrapper.value.scrollLeft)
 
   bodyHeight.value = allHeight - headerHeight
   bodyWidth.value = props.width
@@ -95,6 +95,7 @@ const bScrollTop = (val: number) => {
         :width="bodyWidth"
         :columns="columns"
         :border="border"
+        :max-width="maxWidth"
         @scroll-left="hScrollLeft"
         @max-scroll-width="maxScrollWidth"
       ></table-header>
