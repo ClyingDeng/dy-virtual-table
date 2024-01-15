@@ -65,7 +65,7 @@ const setColumnWidth = (column: any) => {
 const handleWidthMap = () => {
   let allWidth = 0,
     nanWidthNum = 0
-  props.columns.forEach((column) => {
+  props.columns.forEach((column: any) => {
     allWidth += column.width || 0
     if (!column.width) nanWidthNum++
   })
@@ -75,13 +75,13 @@ const handleWidthMap = () => {
     let otherWidth = props.width - allWidth
     let avgWidth = Math.floor(otherWidth / nanWidthNum)
 
-    props.columns.forEach((column) => {
+    props.columns.forEach((column: any) => {
       if (!column.width) column.width = avgWidth
     })
   } else {
     // 如果超过了总宽，给定默认列宽
     let w = 0
-    props.columns.forEach((column) => {
+    props.columns.forEach((column: any) => {
       if (!column.width) column.width = 100
       w += column.width
     })
@@ -295,9 +295,6 @@ let alignDir = ['center', 'left', 'right']
       cellpadding="0"
       :style="{ width: scrollWidthContainer + 'px' }"
     >
-      <colgroup>
-        <col />
-      </colgroup>
       <thead ref="scrollBody">
         <tr>
           <th
@@ -324,53 +321,56 @@ let alignDir = ['center', 'left', 'right']
   overflow: auto;
   width: 100%;
   position: relative;
+
+  tr {
+    background-color: transparent;
+    border: 0px solid transparent;
+  }
+  th {
+    border: 0px solid transparent;
+    background-color: transparent;
+  }
+  .dy-table__cell-border {
+    border-right: 1px solid #ebeef5;
+  }
+  .dy-table__cell {
+    color: #606266;
+    padding: 0;
+    border-bottom: 1px solid #ebeef5;
+
+    box-sizing: border-box;
+    // overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-all;
+    line-height: 23px;
+    padding: 0 12px;
+  }
+  .dy-table__cell:last-child {
+    border-right: 0px solid #ebeef5;
+  }
+
+  .dy-table--border-header {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .header {
+    // width: 100%;
+  }
+
+  .dy-table_cell-text-center {
+    text-align: center;
+  }
+  .dy-table_cell-text-left {
+    text-align: left;
+  }
+  .dy-table_cell-text-right {
+    text-align: right;
+  }
 }
 .dy-vl-header-border {
   border-right: 1px solid #ebeef5;
-}
-.dy-table-header {
-  // width: 100%;
-}
-.dy-table--border-header {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-}
-.header {
-  // width: 100%;
-}
-.dy-table__cell-border {
-  border-right: 1px solid #ebeef5;
-}
-.dy-table__cell {
-  // background-color: #fff;
-  // color: #909399;
-  // padding: 8px 12px;
-  // border-bottom: 1px solid #ebeef5;
-  // box-sizing: border-box;
-  color: #606266;
-  padding: 0;
-  border-bottom: 1px solid #ebeef5;
-
-  box-sizing: border-box;
-  // overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: normal;
-  word-break: break-all;
-  line-height: 23px;
-  padding: 0 12px;
-}
-.dy-table__cell:last-child {
-  border-right: 0px solid #ebeef5;
-}
-.dy-table_cell-text-center {
-  text-align: center;
-}
-.dy-table_cell-text-left {
-  text-align: left;
-}
-.dy-table_cell-text-right {
-  text-align: right;
 }
 
 // 滚动条

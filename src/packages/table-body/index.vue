@@ -75,7 +75,7 @@ const setColumnWidth = (column: any) => {
 const handleWidthMap = () => {
   let allWidth = 0,
     nanWidthNum = 0
-  props.columns.forEach((column) => {
+  props.columns.forEach((column: any) => {
     allWidth += column.width || 0
     if (!column.width) nanWidthNum++
   })
@@ -85,13 +85,13 @@ const handleWidthMap = () => {
     let otherWidth = props.width - allWidth
     let avgWidth = Math.floor(otherWidth / nanWidthNum)
 
-    props.columns.forEach((column) => {
+    props.columns.forEach((column: any) => {
       if (!column.width) column.width = avgWidth
     })
   } else {
     // 如果超过了总宽，给定默认列宽
     let w = 0
-    props.columns.forEach((column) => {
+    props.columns.forEach((column: any) => {
       if (!column.width) column.width = 100
       w += column.width
     })
@@ -484,9 +484,9 @@ let alignDir = ['center', 'left', 'right']
   <div
     id="dy-table-scroll-container"
     ref="tableWrapper"
-    class="dy-vt__wrapper"
+    class="dy-vt__wrapper_body"
     :class="{
-      'dy-vt__wrapper-border': border
+      'dy-vt__wrapper_body-border': border
     }"
     :style="{ height: height + 'px', width: width + 'px' }"
   >
@@ -524,15 +524,32 @@ let alignDir = ['center', 'left', 'right']
 </template>
 
 <style lang="scss" scoped>
-.dy-vt__wrapper {
+.dy-vt__wrapper_body {
   overflow: auto;
   width: 100%;
   position: relative;
-  // border-right: 1px solid #ebeef5;
-  tr:last-child {
-    .dy-table__cell {
-      // border-bottom: 0px solid transparent;
-    }
+  tr:first-child {
+    background-color: transparent;
+    border-top: 0px solid transparent;
+  }
+  td {
+    border-top: 0px solid transparent;
+    border-left: 0px solid transparent;
+    border-right: 0px solid transparent;
+    background-color: transparent;
+  }
+  .dy-table__cell {
+    color: #606266;
+    padding: 0;
+    border-bottom: 1px solid #ebeef5;
+
+    box-sizing: border-box;
+    // overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-all;
+    line-height: 23px;
+    padding: 0 12px;
   }
 }
 .dy-table_cell-text-center {
@@ -548,20 +565,20 @@ let alignDir = ['center', 'left', 'right']
 .dy-table__cell:last-child {
   border-right: 0px solid #ebeef5;
 }
-.dy-vt__wrapper::-webkit-scrollbar {
+.dy-vt__wrapper_body::-webkit-scrollbar {
   width: 0;
   height: 0;
 }
 
-.dy-vt__wrapper::-webkit-scrollbar-track {
+.dy-vt__wrapper_body::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.dy-vt__wrapper::-webkit-scrollbar-thumb {
+.dy-vt__wrapper_body::-webkit-scrollbar-thumb {
   background: transparent;
 }
 
-.dy-vt__wrapper::-webkit-scrollbar-thumb:hover {
+.dy-vt__wrapper_body::-webkit-scrollbar-thumb:hover {
   background: transparent;
 }
 
@@ -577,21 +594,17 @@ let alignDir = ['center', 'left', 'right']
     }
   }
 }
-.dy-table__cell {
-  color: #606266;
-  padding: 0;
-  border-bottom: 1px solid #ebeef5;
 
-  box-sizing: border-box;
-  // overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: normal;
-  word-break: break-all;
-  line-height: 23px;
-  padding: 0 12px;
-}
 .dy-table__cell-border,
-.dy-vt__wrapper-border {
+.dy-vt__wrapper_body-border {
   border-right: 1px solid #ebeef5;
+  tr:first-child {
+    background-color: transparent;
+    border: 0px solid transparent;
+  }
+  td {
+    border-right: 1px solid #ebeef5;
+    background-color: transparent;
+  }
 }
 </style>
