@@ -45,8 +45,7 @@ const props = defineProps({
   }
 })
 const setColumnWidth = (column: any) => {
-  console.log(column)
-
+  handleWidthMap()
   const realWidth = ref(parseWidth(column.width))
   const realMinWidth = ref(parseMinWidth(column.minWidth))
   if (realWidth.value) column.width = realWidth.value
@@ -62,6 +61,32 @@ const setColumnWidth = (column: any) => {
   column.realWidth = Number(!column.width ? column.minWidth : column.width)
 
   return column
+}
+const handleWidthMap = () => {
+  let allWidth = 0,
+    nanWidthNum = 0
+  props.columns.forEach((column) => {
+    allWidth += column.width || 0
+    if (!column.width) nanWidthNum++
+  })
+
+  if (allWidth < props.width) {
+    // 所有设置的宽和 没有超过设置的总宽
+    let otherWidth = props.width - allWidth
+    let avgWidth = Math.floor(otherWidth / nanWidthNum)
+
+    props.columns.forEach((column) => {
+      if (!column.width) column.width = avgWidth
+    })
+  } else {
+    // 如果超过了总宽，给定默认列宽
+    let w = 0
+    props.columns.forEach((column) => {
+      if (!column.width) column.width = 100
+      w += column.width
+    })
+    scrollWidthContainer.value = w
+  }
 }
 
 // let scrollWidthContainer = ref<number>(200 * props.columns.length) // 所有数据的大容器
@@ -262,7 +287,6 @@ let alignDir = ['center', 'left', 'right']
     :class="{ 'dy-vl-header-border': border }"
     :style="{ width: width + 'px' }"
   >
-    {{ scrollWidthContainer }}
     <table
       ref="tableHeader"
       class="dy-table-header dy-table--border-header"
@@ -271,6 +295,9 @@ let alignDir = ['center', 'left', 'right']
       cellpadding="0"
       :style="{ width: scrollWidthContainer + 'px' }"
     >
+      <colgroup>
+        <col />
+      </colgroup>
       <thead ref="scrollBody">
         <tr>
           <th

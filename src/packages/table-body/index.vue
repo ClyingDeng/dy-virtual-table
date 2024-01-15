@@ -55,6 +55,7 @@ const props = defineProps({
 })
 
 const setColumnWidth = (column: any) => {
+  handleWidthMap()
   const realWidth = ref(parseWidth(column.width))
   const realMinWidth = ref(parseMinWidth(column.minWidth))
   if (realWidth.value) column.width = realWidth.value
@@ -71,7 +72,32 @@ const setColumnWidth = (column: any) => {
 
   return column
 }
+const handleWidthMap = () => {
+  let allWidth = 0,
+    nanWidthNum = 0
+  props.columns.forEach((column) => {
+    allWidth += column.width || 0
+    if (!column.width) nanWidthNum++
+  })
 
+  if (allWidth < props.width) {
+    // 所有设置的宽和 没有超过设置的总宽
+    let otherWidth = props.width - allWidth
+    let avgWidth = Math.floor(otherWidth / nanWidthNum)
+
+    props.columns.forEach((column) => {
+      if (!column.width) column.width = avgWidth
+    })
+  } else {
+    // 如果超过了总宽，给定默认列宽
+    let w = 0
+    props.columns.forEach((column) => {
+      if (!column.width) column.width = 100
+      w += column.width
+    })
+    scrollWidthContainer.value = w
+  }
+}
 // const setRowHeight =
 // const =(row: any, nowIdx: number) => {
 //   nextTick(() => {
@@ -112,7 +138,7 @@ const init = () => {
     let lastChild = scrollBody.value.getElementsByTagName('tr')[Number(pageSize.value * (pageNum.value - 1)) - 1] //最后一个元素离顶部的距离
     scrollWidthContainer.value = props.width
     // 没铺满屏幕 继续加数据
-    if (lastChild.offsetTop + lastChild.offsetHeight < clientHeight.value) {
+    if (lastChild && lastChild.offsetTop + lastChild.offsetHeight < clientHeight.value) {
       init()
     } else {
       // 铺满后，设置两倍数据方便滚动
@@ -171,20 +197,25 @@ const onDownScroll = (scrollTop: number) => {
 
       // 数据处理 超出的最前面一页的数据去除
       dataList.value = arr.slice(Number(pageSize.value), dataList.value.length)
-      // 去除数据后 使用padding占位
-      scrollBody.value.style.paddingTop = scrollHeight.value + 'px'
-      nextTick(() => {
+      console.log(arr, dataList.value)
+
+      setTimeout(() => {
+        // 去除数据后 使用padding占位
+        scrollBody.value.style.paddingTop = scrollHeight.value + 'px'
         let second = scrollBody.value.getElementsByTagName('tr')[dataList.value.length - 1]
         heightMap.value[pageNum.value - 1] = second.offsetTop + second.offsetHeight
         oldScrollTop.value = scrollTop
 
-        // console.log(
-        //   'item height更新',
-        //   pageNum.value,
-        //   pageSize.value * (pageNum.value - 4),
-        //   pageSize.value * (pageNum.value - 4) + dataList.value.length,
-        //   dataList.value.length
-        // )
+        console.log(
+          'item height更新',
+          second,
+          pageNum.value,
+          pageSize.value * (pageNum.value - 4),
+          pageSize.value * (pageNum.value - 4) + dataList.value.length,
+          dataList.value,
+          heightMap.value
+        )
+
         collectItemHeight(pageSize.value * 3, pageSize.value * (pageNum.value - 4) + dataList.value.length)
 
         //加载到最后不满一页 整个屏幕禁止滚动
@@ -247,7 +278,7 @@ const scrollEvent = (e: any) => {
     onDownScroll(scrollTop)
   }
   if (scrollTop < oldScrollTop.value) {
-    // 向下滚动
+    // 向上滚动
     onUpScroll(scrollTop)
   }
   // 开始/结束位置
@@ -262,8 +293,8 @@ const scrollEvent = (e: any) => {
 }
 
 nextTick(() => {
-  init()
   initLR()
+  init()
 })
 const emits = defineEmits(['scrollLeft', 'scrollTop', 'maxScrollWidth'])
 defineExpose({})
@@ -340,7 +371,6 @@ const unshiftDataFnLR = (allData = props.columns) => {
   pageNumLR.value--
 }
 const initLR = () => {
-
   addDataFnLR() // 加载一屏数据
   nextTick(() => {
     let lastChild = scrollBody.value.getElementsByTagName('td')[Number(pageSizeLR.value * (pageNumLR.value - 1)) - 1] //最后一个元素离顶部的距离
@@ -441,8 +471,6 @@ const onRightScroll = (scrollLeft: number) => {
       scrollBody.value.style.paddingLeft = scrollWidth.value + 'px'
       nextTick(() => {
         oldscrollLeft.value = scrollWidth.value
-        // console.log('columnList', columnList.value, pageSizeLR.value)
-
         //滚动触发数据变化
         onRightScroll(scrollLeft)
       })
@@ -472,10 +500,10 @@ let alignDir = ['center', 'left', 'right']
     >
       <tbody ref="scrollBody" class="scroll-container">
         <!-- <div ref="scrollBody"> -->
-        <tr v-for="(item, index) in dataList" :key="`tbody_${index}`" class="dy-vt-wrapper">
+        <tr v-for="(item, index) in dataList" :key="`tbody_${Math.random() * index}`" class="dy-vt-wrapper">
           <td
             v-for="(column, i) in columnList"
-            :key="`tcolumn_${index}_${i}`"
+            :key="`tcolumn_${column[i]}`"
             class="dy-table__cell"
             :class="[
               { 'dy-table__cell-border': border },
@@ -503,7 +531,7 @@ let alignDir = ['center', 'left', 'right']
   // border-right: 1px solid #ebeef5;
   tr:last-child {
     .dy-table__cell {
-      border-bottom: 0px solid transparent;
+      // border-bottom: 0px solid transparent;
     }
   }
 }
