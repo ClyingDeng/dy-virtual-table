@@ -108,6 +108,8 @@ const bScrollTop = (val: number) => {
         :columns="columns"
         :border="border"
         :data="data"
+        :stripe="stripe"
+        v-bind="$attrs"
         :max-width="maxWidth"
         :keep-scroll-left="keepScrollLeft"
         @scroll-left="bScrollLeft"

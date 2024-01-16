@@ -3,7 +3,7 @@ import { onMounted, ref, nextTick, watch } from 'vue'
 import DyTableColumn from '../table-column/index.vue'
 import { parseMinWidth, parseWidth } from '../util'
 // @ts-ignore
-import { cloneDeep } from 'lodash'
+import { cloneDeep, debounce } from 'lodash'
 
 onMounted(() => {})
 const props = defineProps({
@@ -51,6 +51,11 @@ const props = defineProps({
   border: {
     type: Boolean,
     default: true
+  },
+  //条纹
+  stripe: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -164,10 +169,12 @@ const init = () => {
           })
         } else {
           let second = scrollBody.value.getElementsByTagName('tr')[dataList.value.length - 1]
-          heightMap.value[3] = second.offsetTop + second.offsetHeight
-          // console.log('铺满了屏幕 两倍', heightMap.value, dataList.value.length, pageNum.value)
-          scrollHeightContainer.value = second.offsetTop + second.offsetHeight
-          collectItemHeight(0, dataList.value.length)
+          nextTick(() => {
+            heightMap.value[3] = second.offsetTop + second.offsetHeight
+            // console.log('铺满了屏幕 两倍', heightMap.value, dataList.value.length, pageNum.value)
+            scrollHeightContainer.value = second.offsetTop + second.offsetHeight
+            collectItemHeight(0, dataList.value.length)
+          })
         }
 
         tableWrapper.value.addEventListener('scroll', (e: any) => scrollEvent(e))
@@ -197,26 +204,33 @@ const onDownScroll = (scrollTop: number) => {
 
       // 数据处理 超出的最前面一页的数据去除
       dataList.value = arr.slice(Number(pageSize.value), dataList.value.length)
-      console.log(arr, dataList.value)
+      console.log(
+        pageSize.value * (pageNum.value - 4) + dataList.value.length - pageSize.value * 3,
+        pageSize.value * (pageNum.value - 4) + dataList.value.length,
+        dataList.value
+      )
 
-      setTimeout(() => {
+      nextTick(() => {
         // 去除数据后 使用padding占位
         scrollBody.value.style.paddingTop = scrollHeight.value + 'px'
         let second = scrollBody.value.getElementsByTagName('tr')[dataList.value.length - 1]
         heightMap.value[pageNum.value - 1] = second.offsetTop + second.offsetHeight
         oldScrollTop.value = scrollTop
 
-        console.log(
-          'item height更新',
-          second,
-          pageNum.value,
-          pageSize.value * (pageNum.value - 4),
-          pageSize.value * (pageNum.value - 4) + dataList.value.length,
-          dataList.value,
-          heightMap.value
-        )
+        // console.log(
+        //   'item height更新',
+        //   second,
+        //   pageNum.value,
+        //   pageSize.value * (pageNum.value - 4),
+        //   pageSize.value * (pageNum.value - 4) + dataList.value.length,
+        //   dataList.value,
+        //   heightMap.value
+        // )
 
-        collectItemHeight(pageSize.value * 3, pageSize.value * (pageNum.value - 4) + dataList.value.length)
+        collectItemHeight(
+          pageSize.value * (pageNum.value - 4) + dataList.value.length - pageSize.value * 3,
+          pageSize.value * (pageNum.value - 4) + dataList.value.length
+        )
 
         //加载到最后不满一页 整个屏幕禁止滚动
         if (dataList.value.length < pageSize.value * 3) {
@@ -224,7 +238,7 @@ const onDownScroll = (scrollTop: number) => {
           return
         }
         //滚动触发数据变化
-        onDownScroll(scrollHeight.value)
+        debounce(() => onDownScroll(scrollHeight.value), 500)
       })
     }
   })
@@ -261,7 +275,8 @@ const onUpScroll = (scrollTop: number) => {
       //   scrollBody.value.style.paddingTop = 0 + 'px'
       //   return
       // }
-      onUpScroll(scrollHeight.value)
+      // onUpScroll(scrollHeight.value)
+      debounce(() => onUpScroll(scrollHeight.value), 500)
     }
   })
 }
@@ -342,10 +357,12 @@ const collectItemHeight = (start = 0, end: any) => {
   // console.log('item height初始化', pageNum.value, pageSize.value, dataList.value.length)
   let trs = scrollBody.value.getElementsByTagName('tr')
   // let length = trs.length
-  for (let i = 0; i < end - start; i++) {
-    // @ts-ignore
-    heightItemMap.value[start + i] = trs[i].offsetHeight
-  }
+  nextTick(() => {
+    for (let i = 0; i < end - start; i++) {
+      // @ts-ignore
+      heightItemMap.value[start + i] = trs[i].offsetHeight
+    }
+  })
   // console.log('ddd', end, heightItemMap.value, pageNum.value, pageSize.value)
 }
 
@@ -415,7 +432,7 @@ const onLeftScroll = (scrollLeft: number) => {
   let midChild = scrollBody.value.getElementsByTagName('td')[pageSizeLR.value] //第一页数据的高度
   nextTick(() => {
     // 渲染出的真实节点的最后一个子节点滚动的位置 加上 本身高度 减去 滚动的偏移量 是否占满不了一屏
-    if (midChild.offsetLeft < scrollLeft) {
+    if (midChild && midChild.offsetLeft < scrollLeft) {
       // 最后边界不满一页数据也需要加载
       if ((pageNumLR.value - 1) * pageSizeLR.value > props.columns.length) {
         return
@@ -446,7 +463,8 @@ const onLeftScroll = (scrollLeft: number) => {
           return
         }
         //滚动触发数据变化
-        onLeftScroll(scrollLeft)
+        // onLeftScroll(scrollLeft)
+        debounce(() => onLeftScroll(scrollLeft), 500)
       })
     }
   })
@@ -472,7 +490,8 @@ const onRightScroll = (scrollLeft: number) => {
       nextTick(() => {
         oldscrollLeft.value = scrollWidth.value
         //滚动触发数据变化
-        onRightScroll(scrollLeft)
+        // onRightScroll(scrollLeft)
+        debounce(() => onRightScroll(scrollLeft), 500)
       })
     }
   })
@@ -496,11 +515,12 @@ let alignDir = ['center', 'left', 'right']
       :border="0"
       cellspacing="0"
       cellpadding="0"
+      :class="[{ 'dy-table--striped': stripe }]"
       :style="{ height: scrollHeightContainer + 'px', width: scrollWidthContainer + 'px' }"
     >
       <tbody ref="scrollBody" class="scroll-container">
         <!-- <div ref="scrollBody"> -->
-        <tr v-for="(item, index) in dataList" :key="`tbody_${Math.random() * index}`" class="dy-vt-wrapper">
+        <tr v-for="(item, index) in dataList" :key="`tbody_${Math.random() * index}`" class="dy-vt-wrapper-tr">
           <td
             v-for="(column, i) in columnList"
             :key="`tcolumn_${column[i]}`"
@@ -589,12 +609,17 @@ let alignDir = ['center', 'left', 'right']
   flex-direction: column;
 
   .scroll-container {
-    .dy-vt-wrapper {
+    .dy-vt-wrapper-tr {
       background-color: #fff;
     }
   }
 }
-
+// 条纹背景
+.dy-table--striped {
+  .dy-vt-wrapper-tr:nth-child(2n) {
+    background-color: #fafafa;
+  }
+}
 .dy-table__cell-border,
 .dy-vt__wrapper_body-border {
   border-right: 1px solid #ebeef5;
