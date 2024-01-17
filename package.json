@@ -1,6 +1,6 @@
 {
   "name": "dy-virtual-table",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "clying",
   "private": false,
   "main": "./dist/dy-virtual-table",
