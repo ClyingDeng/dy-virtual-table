@@ -190,6 +190,8 @@ const onDownScroll = (scrollTop: number) => {
   // let lastChild = scrollBody.value.getElementsByTagName('tr')[dataList.value.length - 1] //最后一个元素离顶部的距离
   let midChild = scrollBody.value.getElementsByTagName('tr')[pageSize.value] //第一页数据的高度
   // let midLastChild = scrollBody.value.getElementsByTagName('tr')[pageSize.value * 2] //最后一页第一条数据
+  oldScrollTop.value = scrollTop
+
   nextTick(() => {
     // 渲染出的真实节点的最后一个子节点滚动的位置 加上 本身高度 减去 滚动的偏移量 是否占满不了一屏
     if (midChild.offsetTop < scrollTop) {
@@ -204,11 +206,6 @@ const onDownScroll = (scrollTop: number) => {
 
       // 数据处理 超出的最前面一页的数据去除
       dataList.value = arr.slice(Number(pageSize.value), dataList.value.length)
-      console.log(
-        pageSize.value * (pageNum.value - 4) + dataList.value.length - pageSize.value * 3,
-        pageSize.value * (pageNum.value - 4) + dataList.value.length,
-        dataList.value
-      )
 
       nextTick(() => {
         // 去除数据后 使用padding占位
@@ -216,16 +213,6 @@ const onDownScroll = (scrollTop: number) => {
         let second = scrollBody.value.getElementsByTagName('tr')[dataList.value.length - 1]
         heightMap.value[pageNum.value - 1] = second.offsetTop + second.offsetHeight
         oldScrollTop.value = scrollTop
-
-        // console.log(
-        //   'item height更新',
-        //   second,
-        //   pageNum.value,
-        //   pageSize.value * (pageNum.value - 4),
-        //   pageSize.value * (pageNum.value - 4) + dataList.value.length,
-        //   dataList.value,
-        //   heightMap.value
-        // )
 
         collectItemHeight(
           pageSize.value * (pageNum.value - 4) + dataList.value.length - pageSize.value * 3,
@@ -248,6 +235,7 @@ const onUpScroll = (scrollTop: number) => {
   // let lastChild = scrollBody.value.getElementsByTagName('tr')[dataList.value.length - 1] //最后一个元素离顶部的距离
   // let midChild = scrollBody.value.getElementsByTagName('tr')[pageSize.value] //第一页数据的高度
   // let midLastChild = scrollBody.value.getElementsByTagName('tr')[pageSize.value * 2] //最后一页第一条数据
+  oldScrollTop.value = scrollTop
   nextTick(() => {
     // 上滑 向头部添加数据 删除尾部隐藏数据
     if (scrollTop - scrollHeight.value < heightMap.value[pageNum.value - 5]) {
@@ -284,9 +272,14 @@ const onUpScroll = (scrollTop: number) => {
 const scrollEvent = (e: any) => {
   let scrollTop = e.target.scrollTop // 当前滚动的位置
   let scrollLeft = e.target.scrollLeft // 当前滚动的位置
+  scrollFn(scrollLeft, scrollTop)
+}
+const scrollFn = (scrollLeft: number, scrollTop: number) => {
   //  0-pageSize*pageNum
   emits('scrollLeft', scrollLeft)
   emits('scrollTop', scrollTop)
+  // console.log(dataList.value, oldScrollTop.value, scrollTop, oldscrollLeft.value, scrollLeft)
+
   // 开始/结束位置
   if (scrollTop > oldScrollTop.value) {
     // 向下滚动
@@ -420,7 +413,7 @@ const initLR = () => {
           widthMap.value[2] = third.offsetLeft + third.offsetWidth
         }
 
-        // console.log('铺满了三屏', columnList.value.length, pageSizeLR.value, widthMap.value, pageNumLR.value)
+        console.log('铺满了三屏', columnList.value.length, pageSizeLR.value, widthMap.value, pageNumLR.value)
         // tableHeaderWrapper.value.addEventListener('scroll', (e:any) => scrollEvent(e))
       })
     }
@@ -429,6 +422,7 @@ const initLR = () => {
 // 滚动
 let scrollWidth = ref(0)
 const onLeftScroll = (scrollLeft: number) => {
+  oldscrollLeft.value = scrollLeft
   let midChild = scrollBody.value.getElementsByTagName('td')[pageSizeLR.value] //第一页数据的高度
   nextTick(() => {
     // 渲染出的真实节点的最后一个子节点滚动的位置 加上 本身高度 减去 滚动的偏移量 是否占满不了一屏
@@ -446,12 +440,12 @@ const onLeftScroll = (scrollLeft: number) => {
       // 数据处理 超出的最前面一页的数据去除
       columnList.value = arr.slice(Number(pageSizeLR.value), columnList.value.length)
       // 去除数据后 使用padding占位
-      scrollBody.value.style.paddingLeft = scrollWidth.value + 'px'
       nextTick(() => {
+        scrollBody.value.style.paddingLeft = scrollWidth.value + 'px'
         let second = scrollBody.value.getElementsByTagName('td')[columnList.value.length - 1]
         widthMap.value[pageNumLR.value - 1] = second.offsetLeft + second.offsetWidth
         oldscrollLeft.value = scrollLeft
-        // console.log('columnList', columnList.value, pageSizeLR.value)
+        // console.log('columnList', dataList.value, columnList.value, pageSizeLR.value)
 
         //加载到最后不满一页 整个屏幕禁止滚动
         if (columnList.value.length < pageSizeLR.value * 3) {
@@ -471,6 +465,7 @@ const onLeftScroll = (scrollLeft: number) => {
 }
 const onRightScroll = (scrollLeft: number) => {
   // let midChild = scrollBody.value.getElementsByTagName('td')[pageSizeLR.value] //第一页数据的高度
+  oldscrollLeft.value = scrollLeft
   nextTick(() => {
     // 渲染出的真实节点的最后一个子节点滚动的位置 加上 本身高度 减去 滚动的偏移量 是否占满不了一屏
     if (scrollLeft - scrollWidth.value < widthMap.value[pageNumLR.value - 5]) {
@@ -523,7 +518,7 @@ let alignDir = ['center', 'left', 'right']
         <tr v-for="(item, index) in dataList" :key="`tbody_${Math.random() * index}`" class="dy-vt-wrapper-tr">
           <td
             v-for="(column, i) in columnList"
-            :key="`tcolumn_${column[i]}`"
+            :key="`tcolumn_${column[i]}_${Math.random() * index}`"
             class="dy-table__cell"
             :class="[
               { 'dy-table__cell-border': border },
