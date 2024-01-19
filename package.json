@@ -3,10 +3,10 @@
   "version": "1.0.2",
   "author": "clying",
   "private": false,
-  "main": "./dist/dy-virtual-table",
+  "main": "./dist/dy-virtual-table.umd.js",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc && vite build",
+    "build": "vue-˜tsc && vite build",
     "preview": "vite preview"
 },
   "dependencies": {
