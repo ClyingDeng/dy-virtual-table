@@ -1,12 +1,12 @@
 {
   "name": "dy-virtual-table",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "clying",
   "private": false,
   "main": "./dist/dy-virtual-table.umd.js",
   "scripts": {
     "dev": "vite",
-    "build": "vue-˜tsc && vite build",
+    "build": "vue-tsc && vite build",
     "preview": "vite preview"
 },
   "dependencies": {
